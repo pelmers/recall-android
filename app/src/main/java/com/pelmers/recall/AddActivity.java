@@ -1,11 +1,16 @@
 package com.pelmers.recall;
 
-import android.graphics.Color;
+import android.app.Activity;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+
+import java.util.List;
 
 
 public class AddActivity extends ActionBarActivity {
@@ -17,8 +22,22 @@ public class AddActivity extends ActionBarActivity {
         android.support.v7.app.ActionBar bar = getSupportActionBar();
         if (bar != null)
             bar.setBackgroundDrawable(new ColorDrawable(MainActivity.THEME_COLOR));
-    }
 
+        final ThingPersistence loader = new ThingPersistence();
+        final Activity that = this;
+        Button saveButton = (Button) findViewById(R.id.save_button);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<RecallThing> things = loader.loadThings(that);
+                EditText key = (EditText) findViewById(R.id.key_text);
+                EditText desc = (EditText) findViewById(R.id.description_text);
+                things.add(new RecallThing(key.getText().toString(), desc.getText().toString()));
+                loader.saveThings(things, that);
+                finish();
+            }
+        });
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

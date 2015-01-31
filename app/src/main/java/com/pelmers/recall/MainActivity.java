@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -28,42 +27,21 @@ public class MainActivity extends ActionBarActivity {
 
     protected static final int THEME_COLOR = Color.rgb(70, 183, 255);
 
-    private static final String FILENAME = "THINGS";
-
     private List<RecallThing> things;
     private ArrayAdapter<RecallThing> mainAdapter;
+    private ThingPersistence loader;
 
     @Override
     protected void onPause() {
         super.onPause();
-        saveThings(things);
-    }
-
-    protected void saveThings(List<RecallThing> things) {
-        // save things to persistent storage
-        try {
-            FileOutputStream outputStream = openFileOutput(FILENAME, Context.MODE_PRIVATE);
-            ObjectOutputStream objectStream = new ObjectOutputStream(outputStream);
-            objectStream.writeObject(things);
-            objectStream.close(); outputStream.close();
-            Toast.makeText(this, "Recall saved", Toast.LENGTH_SHORT).show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Error saving lists", Toast.LENGTH_SHORT).show();
-        }
+        loader.saveThings(things, this);
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        android.support.v7.app.ActionBar bar = getSupportActionBar();
-        if (bar != null)
-            bar.setBackgroundDrawable(new ColorDrawable(THEME_COLOR));
+    protected void onResume() {
+        super.onResume();
         // load things from persistent storage
-        things = loadThings();
-        things.add(new RecallThing("Something", "description"));
+        things = loader.loadThings(this);
         final ListView mainListView = (ListView) findViewById(R.id.mainListView);
         mainAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.thing, android.R.id.text1, things);
         mainListView.setAdapter(mainAdapter);
@@ -85,24 +63,17 @@ public class MainActivity extends ActionBarActivity {
         });
     }
 
-    protected List<RecallThing> loadThings() {
-        List<RecallThing> things;
-        try {
-            FileInputStream inputStream = openFileInput(FILENAME);
-            ObjectInputStream objectStream = new ObjectInputStream(inputStream);
-            //noinspection unchecked
-            things = (List<RecallThing>) objectStream.readObject();
-            objectStream.close(); inputStream.close();
-        } catch (IOException e) {
-            // assume that if we can't load that is because we haven't saved yet
-            things = new ArrayList<>();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            things = new ArrayList<>();
-            Toast.makeText(this, "Error loading things", Toast.LENGTH_SHORT).show();
-        }
-        return things;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        android.support.v7.app.ActionBar bar = getSupportActionBar();
+        if (bar != null)
+            bar.setBackgroundDrawable(new ColorDrawable(THEME_COLOR));
+        loader = new ThingPersistence();
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
