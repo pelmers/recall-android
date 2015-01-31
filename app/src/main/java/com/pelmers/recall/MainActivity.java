@@ -41,7 +41,9 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // TODO: launch activity to view this item
-                things.get(position).incrementReminder();
+                Intent viewIntent = new Intent(getBaseContext(), ViewActivity.class);
+                viewIntent.putExtra("position", position);
+                startActivity(viewIntent);
                 mainAdapter.notifyDataSetChanged();
             }
         });

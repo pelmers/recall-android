@@ -15,5 +15,10 @@
     <string name="reset">Reset</string>
     <string name="delete_button">Delete</string>
     <string name="title_activity_view">View</string>
+    <string name="done_text">Done</string>
+    <string name="ontime_text">On time</string>
+    <string name="early_text">Early</string>
+    <string name="late_text">Late</string>
+    <string name="feedback_text">Feedback</string>
 
 </resources>
