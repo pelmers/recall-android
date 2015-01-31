@@ -1,6 +1,5 @@
 package com.pelmers.recall;
 
-import android.app.Activity;
 import android.content.Context;
 import android.widget.Toast;
 
@@ -17,25 +16,30 @@ import java.util.List;
  */
 public class ThingPersistence {
     private static final String FILENAME = "THINGS";
+    private Context context;
 
-    protected void saveThings(List<RecallThing> things, Activity activity) {
+    public ThingPersistence(Context context) {
+        this.context = context;
+    }
+
+    protected void saveThings(List<RecallThing> things) {
         // save things to persistent storage
         try {
-            FileOutputStream outputStream = activity.openFileOutput(FILENAME, Context.MODE_PRIVATE);
+            FileOutputStream outputStream = context.openFileOutput(FILENAME, Context.MODE_PRIVATE);
             ObjectOutputStream objectStream = new ObjectOutputStream(outputStream);
             objectStream.writeObject(things);
             objectStream.close(); outputStream.close();
-            Toast.makeText(activity, "Recall saved", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Recall saved", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(activity, "Error saving lists", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Error saving lists", Toast.LENGTH_SHORT).show();
         }
     }
 
-    protected List<RecallThing> loadThings(Activity activity) {
+    protected List<RecallThing> loadThings() {
         List<RecallThing> things;
         try {
-            FileInputStream inputStream = activity.openFileInput(FILENAME);
+            FileInputStream inputStream = context.openFileInput(FILENAME);
             ObjectInputStream objectStream = new ObjectInputStream(inputStream);
             //noinspection unchecked
             things = (List<RecallThing>) objectStream.readObject();
@@ -46,7 +50,7 @@ public class ThingPersistence {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             things = new ArrayList<>();
-            Toast.makeText(activity, "Error loading things", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Error loading things", Toast.LENGTH_SHORT).show();
         }
         return things;
     }

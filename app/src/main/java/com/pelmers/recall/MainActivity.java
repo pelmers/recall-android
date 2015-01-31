@@ -1,6 +1,5 @@
 package com.pelmers.recall;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -12,14 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -34,21 +26,21 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        loader.saveThings(things, this);
+        loader.saveThings(things);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         // load things from persistent storage
-        things = loader.loadThings(this);
+        things = loader.loadThings();
         final ListView mainListView = (ListView) findViewById(R.id.mainListView);
         mainAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.thing, android.R.id.text1, things);
         mainListView.setAdapter(mainAdapter);
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // handle click on this position
+                // TODO: launch activity to view this item
                 things.get(position).incrementReminder();
                 mainAdapter.notifyDataSetChanged();
             }
@@ -56,7 +48,10 @@ public class MainActivity extends ActionBarActivity {
         mainListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                things.remove(position);
+                // TODO: launch activity to modify this item
+                Intent modifyIntent = new Intent(getBaseContext(), ModifyActivity.class);
+                modifyIntent.putExtra("position", position);
+                startActivity(modifyIntent);
                 mainAdapter.notifyDataSetChanged();
                 return true;
             }
@@ -71,7 +66,7 @@ public class MainActivity extends ActionBarActivity {
         android.support.v7.app.ActionBar bar = getSupportActionBar();
         if (bar != null)
             bar.setBackgroundDrawable(new ColorDrawable(THEME_COLOR));
-        loader = new ThingPersistence();
+        loader = new ThingPersistence(this);
     }
 
 

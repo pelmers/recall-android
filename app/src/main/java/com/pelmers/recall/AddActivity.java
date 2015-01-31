@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -20,21 +21,27 @@ public class AddActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
         android.support.v7.app.ActionBar bar = getSupportActionBar();
-        if (bar != null)
+        if (bar != null) {
             bar.setBackgroundDrawable(new ColorDrawable(MainActivity.THEME_COLOR));
+            bar.setDisplayHomeAsUpEnabled(true);
+        }
 
-        final ThingPersistence loader = new ThingPersistence();
-        final Activity that = this;
+        final ThingPersistence loader = new ThingPersistence(this);
         Button saveButton = (Button) findViewById(R.id.save_button);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<RecallThing> things = loader.loadThings(that);
-                EditText key = (EditText) findViewById(R.id.key_text);
-                EditText desc = (EditText) findViewById(R.id.description_text);
-                things.add(new RecallThing(key.getText().toString(), desc.getText().toString()));
-                loader.saveThings(things, that);
-                finish();
+                List<RecallThing> things = loader.loadThings();
+                String key = ((EditText) findViewById(R.id.key_text)).getText().toString();
+                String desc = ((EditText) findViewById(R.id.description_text)).getText().toString();
+                // only make it if at least one is nonempty
+                if (key.length() != 0 || desc.length() != 0) {
+                    things.add(new RecallThing(key, desc));
+                    loader.saveThings(things);
+                    finish();
+                } else {
+                    Toast.makeText(getBaseContext(), "Key or description not set", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -55,6 +62,9 @@ public class AddActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        } else if (id == android.R.id.home) {
+            finish();
             return true;
         }
 

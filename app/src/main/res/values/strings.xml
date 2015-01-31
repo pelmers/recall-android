@@ -9,5 +9,11 @@
     <string name="save_button">Save</string>
     <string name="description_button">Description</string>
     <string name="keyword_button">Keywords</string>
+    <string name="title_activity_modify">ModifyActivity</string>
+    <string name="next_reminder">Next Reminder</string>
+    <string name="times_reminded">Times reminded:</string>
+    <string name="reset">Reset</string>
+    <string name="delete_button">Delete</string>
+    <string name="title_activity_view">View</string>
 
 </resources>

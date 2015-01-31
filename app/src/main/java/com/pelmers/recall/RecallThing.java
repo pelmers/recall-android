@@ -13,6 +13,11 @@ public class RecallThing implements Serializable {
     private String keywords;
     private String description;
     private Date nextReminder;
+
+    public int getTimesReminded() {
+        return timesReminded;
+    }
+
     private int timesReminded;
 
     public RecallThing(String key, String description) {
