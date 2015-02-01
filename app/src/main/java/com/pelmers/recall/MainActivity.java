@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.util.Collections;
 import java.util.List;
 
 
@@ -38,8 +39,10 @@ public class MainActivity extends ActionBarActivity {
     private void updateAdapter() {
         // load things from persistent storage
         things = loader.loadThings();
+        Collections.sort(things);
         mainAdapter = new RecallAdapter(getApplicationContext(), R.layout.thing, android.R.id.text1, things);
         mainListView.setAdapter(mainAdapter);
+        loader.saveThings(things);
     }
 
     @Override

@@ -27,6 +27,7 @@ public class ModifyActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify);
+        setTitle("Modify");
         android.support.v7.app.ActionBar bar = getSupportActionBar();
         if (bar != null) {
             bar.setBackgroundDrawable(new ColorDrawable(MainActivity.THEME_COLOR));

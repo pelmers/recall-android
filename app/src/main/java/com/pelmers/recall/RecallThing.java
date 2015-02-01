@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -21,7 +23,7 @@ import java.util.UUID;
 /**
  * Encapsulate things about recall things.
  */
-public class RecallThing implements Serializable {
+public class RecallThing implements Serializable, Comparable<RecallThing> {
     // Time until first reminder, in seconds
     private static final long FIRST_REMINDER = 10;
     // Exponential scaling factor
@@ -127,13 +129,24 @@ public class RecallThing implements Serializable {
         return id;
     }
 
+    @Override
+    public int compareTo(RecallThing another) {
+        if (another.isViewed() && !isViewed())
+            return -1;
+        else if (!another.isViewed() && isViewed())
+            return 1;
+        return nextReminder.compareTo(another.getNextReminder());
+    }
+
     public static class ThingPositionTuple {
         public RecallThing thing;
         public int position;
+        public List<RecallThing> things;
 
-        public ThingPositionTuple(RecallThing thing, int position) {
+        public ThingPositionTuple(RecallThing thing, int position, List<RecallThing> things) {
             this.thing = thing;
             this.position = position;
+            this.things = things;
         }
     }
 }
