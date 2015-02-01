@@ -23,6 +23,12 @@
         android:layout_alignParentStart="true"
         android:lines="2" />
 
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:layout_above="@+id/next_reminder_text"
+        android:background="?android:attr/listDivider" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

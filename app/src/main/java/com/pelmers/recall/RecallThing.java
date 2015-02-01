@@ -104,7 +104,7 @@ public class RecallThing implements Serializable, Comparable<RecallThing> {
 
     @Override
     public String toString() {
-        return keywords + "\n" + "Next: " + formatDate(nextReminder);
+        return keywords + "\n" + formatDate(nextReminder);
     }
 
     public void incrementReminder(Context context) {

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.text.Html;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.view.View;
@@ -24,11 +25,19 @@ public class RecallAdapter extends ArrayAdapter<RecallThing> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         TextView view =  (TextView) super.getView(position, convertView, parent);
-        if (getItem(position).isViewed())
-            markRead(view);
-        else
+        markSmaller(view);
+        if (!getItem(position).isViewed())
             markUnread(view);
         return view;
+    }
+
+    private void markSmaller(TextView view) {
+        // mark the last line of view as smaller
+        String text = String.valueOf(view.getText());
+        int lastN = text.lastIndexOf('\n');
+        view.setText(Html.fromHtml(String.format("%s<br><small><small><i>%s</i></small></small>",
+                                                  text.substring(0, lastN),
+                                                  text.substring(lastN))));
     }
 
     /**
@@ -36,8 +45,6 @@ public class RecallAdapter extends ArrayAdapter<RecallThing> {
      * @param textView to mark completed
      */
     public void markRead(TextView textView) {
-        textView.setTextColor(Color.BLACK);
-        textView.setText(textView.getText().toString());
     }
 
     /**
