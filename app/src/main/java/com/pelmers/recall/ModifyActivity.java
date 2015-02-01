@@ -1,5 +1,7 @@
 package com.pelmers.recall;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -85,6 +87,14 @@ public class ModifyActivity extends ActionBarActivity {
                 }
             }
         });
+        RecallThing item = things.get(position);
+        if (!item.isViewed()) {
+            item.setViewed(true);
+            // clear any notification
+            NotificationManager mNotificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.cancel(item.getAlarmID());
+        }
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.pelmers.recall;
 
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -61,6 +62,10 @@ public class ViewActivity extends ActionBarActivity {
         });
         if (!item.isViewed()) {
             item.setViewed(true);
+            // clear any notification
+            NotificationManager mNotificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.cancel(item.getAlarmID());
         } else {
             // already viewed, hide feedback buttons
             RadioGroup feedbackGroup = (RadioGroup) findViewById(R.id.feedback_group);
