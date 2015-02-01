@@ -41,13 +41,6 @@ public class RecallAdapter extends ArrayAdapter<RecallThing> {
     }
 
     /**
-     * Modify the style of a text view to indicate completion
-     * @param textView to mark completed
-     */
-    public void markRead(TextView textView) {
-    }
-
-    /**
      * Mark a text view as incomplete (should undo what markComplete does)
      * @param textView to mark incomplete
      */

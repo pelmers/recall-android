@@ -98,7 +98,7 @@ public class RecallThing implements Serializable, Comparable<RecallThing> {
         return String.format("%s %d, %02d:%02d",
                              cal.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.ENGLISH),
                              cal.get(Calendar.DAY_OF_MONTH),
-                             cal.get(Calendar.HOUR),
+                             cal.get(Calendar.HOUR_OF_DAY),
                              cal.get(Calendar.MINUTE));
     }
 
