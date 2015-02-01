@@ -8,12 +8,9 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Receive alarm broadcasts.

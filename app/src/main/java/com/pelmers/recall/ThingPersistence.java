@@ -1,7 +1,6 @@
 package com.pelmers.recall;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.Toast;
 
 import java.io.FileInputStream;
@@ -10,9 +9,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Singleton handle loading and saving things to some file.

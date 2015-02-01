@@ -5,16 +5,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -57,6 +57,7 @@ public class ViewActivity extends ActionBarActivity {
         TextView descText = (TextView) findViewById(R.id.description_text);
         keyText.setText(item.getKeywords());
         descText.setText(item.getDescription());
+        descText.setTextColor(Color.BLACK);
         setTimes(things.get(position));
         Button doneButton = (Button) findViewById(R.id.done_button);
         doneButton.setOnClickListener(new View.OnClickListener() {
