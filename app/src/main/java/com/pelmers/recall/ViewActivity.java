@@ -3,6 +3,7 @@ package com.pelmers.recall;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -51,7 +52,7 @@ public class ViewActivity extends ActionBarActivity {
             Log.d("???", "Position not found in intent bundle?");
         }
 
-        RecallThing item = things.get(position);
+        final RecallThing item = things.get(position);
         // set the text for key and description
         TextView keyText = (TextView) findViewById(R.id.key_text);
         TextView descText = (TextView) findViewById(R.id.description_text);
@@ -76,6 +77,17 @@ public class ViewActivity extends ActionBarActivity {
                 mNotificationManager.notify(0, builder.build());
             else
                 mNotificationManager.cancel(0);
+            // show an alert dialog to ask them for input
+            TextInputAlertDialog.showInputAlertDialog(this, "Retype your keywords", "OK", new TextInputAlertDialog.TextInputClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, String text) {
+                    if (text.equals(item.getKeywords())) {
+                        Toast.makeText(getBaseContext(), "Correct", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getBaseContext(), "Incorrect", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         } else {
             // already viewed, hide feedback buttons
             RadioGroup feedbackGroup = (RadioGroup) findViewById(R.id.feedback_group);
