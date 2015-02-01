@@ -15,8 +15,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -24,6 +26,7 @@ public class ViewActivity extends ActionBarActivity {
 
     private int position;
     private BroadcastReceiver receiver;
+    private boolean feedbackRemoved = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +81,7 @@ public class ViewActivity extends ActionBarActivity {
             TextView feedbackText = (TextView) findViewById(R.id.feedback_text);
             feedbackGroup.removeAllViews();
             feedbackText.setText("");
+            feedbackRemoved = true;
         }
         loader.saveThings(things);
     }
@@ -95,6 +99,22 @@ public class ViewActivity extends ActionBarActivity {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(receiver);
+        if (!feedbackRemoved) {
+            // view the feedback
+            RadioGroup feedbackGroup = (RadioGroup) findViewById(R.id.feedback_group);
+            TextView feedbackText = (TextView) findViewById(R.id.feedback_text);
+            int selected = feedbackGroup.getCheckedRadioButtonId();
+            RadioButton rb = (RadioButton) feedbackGroup.findViewById(selected);
+            Toast.makeText(this, "Feedback saved: " + rb.getText(), Toast.LENGTH_SHORT).show();
+            if (selected == R.id.feedback_early) {
+                RecallThing.FIRST_REMINDER *= 1.1;
+            } else if (selected == R.id.feedback_late) {
+                RecallThing.FIRST_REMINDER /= 1.1;
+            }
+            feedbackGroup.removeAllViews();
+            feedbackText.setText("");
+            feedbackRemoved = true;
+        }
     }
 
     private void setTimes(RecallThing thing) {

@@ -29,9 +29,9 @@ import java.util.UUID;
  */
 public class RecallThing implements Serializable, Comparable<RecallThing> {
     // Time until first reminder, in seconds
-    private static final long FIRST_REMINDER = 10;
+    protected static long FIRST_REMINDER = 10;
     // Exponential scaling factor
-    private static final double REPETITION_SPACING = 3;
+    protected static double REPETITION_SPACING = 3;
     protected static final String ACTION = "com.pelmers.recall.BROADCAST";
 
     private String keywords;
