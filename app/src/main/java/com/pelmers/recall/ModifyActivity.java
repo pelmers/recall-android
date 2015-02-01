@@ -1,7 +1,10 @@
 package com.pelmers.recall;
 
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -22,6 +25,7 @@ public class ModifyActivity extends ActionBarActivity {
     private int position = 0;
     private ThingPersistence loader;
     private List<RecallThing> things;
+    private ModifyReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +105,7 @@ public class ModifyActivity extends ActionBarActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        unregisterReceiver(receiver);
     }
 
     @Override
@@ -110,6 +115,10 @@ public class ModifyActivity extends ActionBarActivity {
         loader = ThingPersistence.getInstance(this);
         things = loader.loadThings();
         initFields();
+        receiver = new ModifyReceiver();
+        IntentFilter filter = new IntentFilter(RecallThing.ACTION);
+        filter.setPriority(100);
+        registerReceiver(receiver, filter);
     }
 
     private void initFields() {
@@ -152,5 +161,18 @@ public class ModifyActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private class ModifyReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            RecallThing.ThingPositionTuple tuple = AlarmReceiver.incrementID(intent.getStringExtra("_id"), context, true);
+            abortBroadcast();
+            if (tuple == null)
+                return;
+            if (tuple.position == position) {
+                setTimes(tuple.things);
+            }
+        }
     }
 }

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.ColorDrawable;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -40,6 +41,7 @@ public class ViewActivity extends ActionBarActivity {
         if (extras != null) {
             position = RecallThing.findByID(things, (String) extras.get("_id"));
             if (position == -1) {
+                Log.d("???", "Position not found in things?");
                 finish();
             }
         } else {
@@ -62,10 +64,14 @@ public class ViewActivity extends ActionBarActivity {
         });
         if (!item.isViewed()) {
             item.setViewed(true);
-            // clear any notification
+            // reset notifications if necessary
             NotificationManager mNotificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            mNotificationManager.cancel(item.getAlarmID());
+            NotificationCompat.Builder builder = AlarmReceiver.buildNotification(this, things);
+            if (builder != null)
+                mNotificationManager.notify(0, builder.build());
+            else
+                mNotificationManager.cancel(0);
         } else {
             // already viewed, hide feedback buttons
             RadioGroup feedbackGroup = (RadioGroup) findViewById(R.id.feedback_group);
@@ -96,7 +102,7 @@ public class ViewActivity extends ActionBarActivity {
         TextView numReminders = (TextView) findViewById(R.id.times_reminded_text);
         numReminders.setText(getString(R.string.times_reminded) + " " + thing.getTimesReminded());
         TextView nextDate = (TextView) findViewById(R.id.next_reminder_text);
-        nextDate.setText(getString(R.string.next_reminder) + " " + thing.getNextReminder());
+        nextDate.setText(getString(R.string.next_reminder) + " " + RecallThing.formatDate(thing.getNextReminder()));
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -14,10 +15,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -88,9 +92,19 @@ public class RecallThing implements Serializable, Comparable<RecallThing> {
         return nextReminder;
     }
 
+    public static String formatDate(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return String.format("%s %d, %02d:%02d",
+                             cal.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.ENGLISH),
+                             cal.get(Calendar.DAY_OF_MONTH),
+                             cal.get(Calendar.HOUR),
+                             cal.get(Calendar.MINUTE));
+    }
+
     @Override
     public String toString() {
-        return keywords + "\n" + "Next: " + nextReminder;
+        return keywords + "\n" + "Next: " + formatDate(nextReminder);
     }
 
     public void incrementReminder(Context context) {
@@ -130,7 +144,7 @@ public class RecallThing implements Serializable, Comparable<RecallThing> {
     }
 
     @Override
-    public int compareTo(RecallThing another) {
+    public int compareTo(@NonNull RecallThing another) {
         if (another.isViewed() && !isViewed())
             return -1;
         else if (!another.isViewed() && isViewed())

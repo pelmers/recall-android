@@ -36,23 +36,19 @@ public class AlarmReceiver extends BroadcastReceiver {
         return new RecallThing.ThingPositionTuple(things.get(position), position, things);
     }
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        String id = intent.getStringExtra("_id");
-
-        RecallThing.ThingPositionTuple tuple = incrementID(id, context, false);
-        if (tuple == null) {
-            Log.d("recv", "Empty match, skipping notify");
-            return;
-        }
-
+    protected static NotificationCompat.Builder buildNotification(Context context, List<RecallThing> things) {
         List<String> keywords = new ArrayList<>();
-        for (RecallThing thing: tuple.things) {
-            if (!thing.isViewed())
+        RecallThing theThing = null;
+        for (RecallThing thing: things) {
+            if (!thing.isViewed()) {
                 keywords.add(thing.getKeywords());
+                theThing = thing;
+            }
         }
-        String title = tuple.thing.getKeywords();
-        String text = tuple.thing.getDescription();
+        if (theThing == null)
+            return null;
+        String title = theThing.getKeywords();
+        String text = theThing.getDescription();
         if (keywords.size() > 1) {
             title = String.format("%d unviewed reminders.", keywords.size());
             text = joinStrings(keywords, ", ");
@@ -67,22 +63,36 @@ public class AlarmReceiver extends BroadcastReceiver {
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         Intent parent = new Intent(context, MainActivity.class);
         stackBuilder.addNextIntent(parent);
-        if (keywords.size() <= 1) {
+        if (keywords.size() == 1) {
             Intent result = new Intent(context, ViewActivity.class);
-            result.putExtra("_id", tuple.thing.getId().toString());
+            result.putExtra("_id", theThing.getId().toString());
             stackBuilder.addNextIntent(result);
         }
         PendingIntent resultPendingIntent =
                 stackBuilder.getPendingIntent(
-                        tuple.thing.getAlarmID(),
+                        theThing.getAlarmID(),
                         PendingIntent.FLAG_ONE_SHOT
                 );
         mBuilder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager =
+        return mBuilder;
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        String id = intent.getStringExtra("_id");
+
+        RecallThing.ThingPositionTuple tuple = incrementID(id, context, false);
+        if (tuple == null) {
+            Log.d("recv", "Empty match, skipping notify");
+            return;
+        }
+       NotificationManager mNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder builder = AlarmReceiver.buildNotification(context, tuple.things);
         // overwrite any existing alarm
         mNotificationManager.cancel(0);
-        mNotificationManager.notify(0, mBuilder.build());
+        if (builder != null)
+            mNotificationManager.notify(0, builder.build());
     }
 
     private static String joinStrings(List<String> strings, String delimiter) {
