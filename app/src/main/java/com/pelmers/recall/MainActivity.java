@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 
@@ -84,6 +86,16 @@ public class MainActivity extends ActionBarActivity {
         if (bar != null)
             bar.setBackgroundDrawable(new ColorDrawable(THEME_COLOR));
         loader = ThingPersistence.getInstance(this);
+        // if we somehow skipped over something, fast-forward it
+        Date now = new Date();
+        things = loader.loadThings();
+        for (RecallThing t : things) {
+            while (t.getNextReminder().compareTo(now) < 0) {
+                t.incrementReminder(this);
+                Log.d("Main", "forwarding something: " + t);
+            }
+        }
+        loader.saveThings(things);
     }
 
 
