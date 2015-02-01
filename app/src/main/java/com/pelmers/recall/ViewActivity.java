@@ -8,14 +8,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.util.List;
 
-
 public class ViewActivity extends ActionBarActivity {
 
     private int position;
+    private ThingPersistence loader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +35,7 @@ public class ViewActivity extends ActionBarActivity {
             System.out.println("Position not found in intent bundle?");
         }
 
-        ThingPersistence loader = new ThingPersistence(this);
+        loader = ThingPersistence.getInstance(this);
         List<RecallThing> things = loader.loadThings();
         RecallThing item = things.get(position);
         // set the text for key and description
@@ -42,6 +43,7 @@ public class ViewActivity extends ActionBarActivity {
         TextView descText = (TextView) findViewById(R.id.description_text);
         keyText.setText(item.getKeywords());
         descText.setText(item.getDescription());
+        setTimes(things);
         Button doneButton = (Button) findViewById(R.id.done_button);
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,8 +51,34 @@ public class ViewActivity extends ActionBarActivity {
                 finish();
             }
         });
-        item.setViewed(true);
+        if (!item.isViewed()) {
+            item.setViewed(true);
+        } else {
+            // already viewed, hide feedback buttons
+            RadioGroup feedbackGroup = (RadioGroup) findViewById(R.id.feedback_group);
+            TextView feedbackText = (TextView) findViewById(R.id.feedback_text);
+            feedbackGroup.removeAllViews();
+            feedbackText.setText("");
+        }
         loader.saveThings(things);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    private void setTimes(List<RecallThing> things) {
+        // set fields related to number of times reminded and the next reminder time
+        TextView numReminders = (TextView) findViewById(R.id.times_reminded_text);
+        numReminders.setText(getString(R.string.times_reminded) + " " + things.get(position).getTimesReminded());
+        TextView nextDate = (TextView) findViewById(R.id.next_reminder_text);
+        nextDate.setText(getString(R.string.next_reminder) + " " + things.get(position).getNextReminder());
     }
 
     @Override

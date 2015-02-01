@@ -22,6 +22,7 @@ public class MainActivity extends ActionBarActivity {
     private List<RecallThing> things;
     private ArrayAdapter<RecallThing> mainAdapter;
     private ThingPersistence loader;
+    private ListView mainListView;
 
     @Override
     protected void onPause() {
@@ -29,18 +30,21 @@ public class MainActivity extends ActionBarActivity {
         loader.saveThings(things);
     }
 
+    private void updateAdapter() {
+        // load things from persistent storage
+        things = loader.loadThings();
+        mainAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.thing, android.R.id.text1, things);
+        mainListView.setAdapter(mainAdapter);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        // load things from persistent storage
-        things = loader.loadThings();
-        final ListView mainListView = (ListView) findViewById(R.id.mainListView);
-        mainAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.thing, android.R.id.text1, things);
-        mainListView.setAdapter(mainAdapter);
+        mainListView = (ListView) findViewById(R.id.mainListView);
+        updateAdapter();
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // TODO: launch activity to view this item
                 Intent viewIntent = new Intent(getBaseContext(), ViewActivity.class);
                 viewIntent.putExtra("position", position);
                 startActivity(viewIntent);
@@ -50,7 +54,6 @@ public class MainActivity extends ActionBarActivity {
         mainListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                // TODO: launch activity to modify this item
                 Intent modifyIntent = new Intent(getBaseContext(), ModifyActivity.class);
                 modifyIntent.putExtra("position", position);
                 startActivity(modifyIntent);
@@ -68,7 +71,7 @@ public class MainActivity extends ActionBarActivity {
         android.support.v7.app.ActionBar bar = getSupportActionBar();
         if (bar != null)
             bar.setBackgroundDrawable(new ColorDrawable(THEME_COLOR));
-        loader = new ThingPersistence(this);
+        loader = ThingPersistence.getInstance(this);
     }
 
 

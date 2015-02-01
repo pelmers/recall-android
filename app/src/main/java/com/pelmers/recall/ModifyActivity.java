@@ -43,6 +43,7 @@ public class ModifyActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 List<RecallThing> things = loader.loadThings();
+                things.get(position).cancelBroadcast(getBaseContext());
                 things.remove(position);
                 loader.saveThings(things);
                 finish();
@@ -55,7 +56,8 @@ public class ModifyActivity extends ActionBarActivity {
             public void onClick(View v) {
                 List<RecallThing> things = loader.loadThings();
                 RecallThing oldThing = things.get(position);
-                things.set(position, new RecallThing(oldThing.getKeywords(), oldThing.getDescription()));
+                oldThing.cancelBroadcast(getBaseContext());
+                things.set(position, new RecallThing(oldThing.getKeywords(), oldThing.getDescription(), getBaseContext()));
                 setTimes(things);
                 loader.saveThings(things);
             }
@@ -81,10 +83,15 @@ public class ModifyActivity extends ActionBarActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         // makes sure loader always has valid reference to a context
-        loader = new ThingPersistence(this);
+        loader = ThingPersistence.getInstance(this);
         initFields();
     }
 

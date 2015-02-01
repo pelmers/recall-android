@@ -26,7 +26,7 @@ public class AddActivity extends ActionBarActivity {
             bar.setDisplayHomeAsUpEnabled(true);
         }
 
-        final ThingPersistence loader = new ThingPersistence(this);
+        final ThingPersistence loader = ThingPersistence.getInstance(this);
         Button saveButton = (Button) findViewById(R.id.save_button);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -36,7 +36,7 @@ public class AddActivity extends ActionBarActivity {
                 String desc = ((EditText) findViewById(R.id.description_text)).getText().toString();
                 // only make it if at least one is nonempty
                 if (key.length() != 0 || desc.length() != 0) {
-                    things.add(new RecallThing(key, desc));
+                    things.add(new RecallThing(key, desc, getBaseContext()));
                     loader.saveThings(things);
                     finish();
                 } else {

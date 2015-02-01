@@ -1,6 +1,7 @@
 package com.pelmers.recall;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.FileInputStream;
@@ -9,17 +10,26 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Handle loading and saving things to some file.
+ * Singleton handle loading and saving things to some file.
  */
 public class ThingPersistence {
     private static final String FILENAME = "THINGS";
-    private Context context;
+    private static ThingPersistence instance = null;
+    private Context context = null;
 
-    public ThingPersistence(Context context) {
-        this.context = context;
+    public static ThingPersistence getInstance(Context ctx) {
+        if (instance == null)
+            instance = new ThingPersistence();
+        instance.context = ctx;
+        return instance;
+    }
+
+    private ThingPersistence() {
     }
 
     protected void saveThings(List<RecallThing> things) {
@@ -28,8 +38,9 @@ public class ThingPersistence {
             FileOutputStream outputStream = context.openFileOutput(FILENAME, Context.MODE_PRIVATE);
             ObjectOutputStream objectStream = new ObjectOutputStream(outputStream);
             objectStream.writeObject(things);
-            objectStream.close(); outputStream.close();
-            Toast.makeText(context, "Recall saved", Toast.LENGTH_SHORT).show();
+            objectStream.close();
+            outputStream.close();
+            //Toast.makeText(context, "Recall saved", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(context, "Error saving lists", Toast.LENGTH_SHORT).show();
@@ -43,7 +54,8 @@ public class ThingPersistence {
             ObjectInputStream objectStream = new ObjectInputStream(inputStream);
             //noinspection unchecked
             things = (List<RecallThing>) objectStream.readObject();
-            objectStream.close(); inputStream.close();
+            objectStream.close();
+            inputStream.close();
         } catch (IOException e) {
             // assume that if we can't load that is because we haven't saved yet
             things = new ArrayList<>();
@@ -54,4 +66,5 @@ public class ThingPersistence {
         }
         return things;
     }
+
 }
