@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -42,6 +43,19 @@ public class RecallThing implements Serializable {
         id = UUID.randomUUID();
         alarmID = pickAlarmID();
         incrementReminder(ctx);
+    }
+
+    public static int findByID(List<RecallThing> things, String id) {
+        // index of thing with given id, else -1
+        int position = -1;
+        for (int i = 0; i < things.size(); i++) {
+            RecallThing thing = things.get(i);
+            if (thing.getId().toString().equals(id)) {
+                position = i;
+                break;
+            }
+        }
+        return position;
     }
 
     private int pickAlarmID() {
@@ -84,7 +98,7 @@ public class RecallThing implements Serializable {
         long nextInterval = (long) Math.pow(REPETITION_SPACING, timesReminded) * FIRST_REMINDER * 1000;
         nextReminder.setTime(nextReminder.getTime() + nextInterval);
         Intent alarmIntent = new Intent(ACTION);
-        alarmIntent.putExtra("thingID", id.toString());
+        alarmIntent.putExtra("_id", id.toString());
         PendingIntent sender = PendingIntent.getBroadcast(context, alarmID, alarmIntent, PendingIntent.FLAG_ONE_SHOT);
         Log.d("recall", "id: " + id);
         AlarmManager alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);

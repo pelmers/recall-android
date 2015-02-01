@@ -34,14 +34,17 @@ public class ViewActivity extends ActionBarActivity {
         }
 
         Bundle extras = getIntent().getExtras();
+        ThingPersistence loader = ThingPersistence.getInstance(this);
+        List<RecallThing> things = loader.loadThings();
         if (extras != null) {
-            position = (int) extras.get("position");
+            position = RecallThing.findByID(things, (String) extras.get("_id"));
+            if (position == -1) {
+                finish();
+            }
         } else {
             Log.d("???", "Position not found in intent bundle?");
         }
 
-        ThingPersistence loader = ThingPersistence.getInstance(this);
-        List<RecallThing> things = loader.loadThings();
         RecallThing item = things.get(position);
         // set the text for key and description
         TextView keyText = (TextView) findViewById(R.id.key_text);
@@ -119,7 +122,7 @@ public class ViewActivity extends ActionBarActivity {
     private class ViewReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            RecallThing.ThingPositionTuple tuple = AlarmReceiver.incrementID(intent.getStringExtra("thingID"), context, true);
+            RecallThing.ThingPositionTuple tuple = AlarmReceiver.incrementID(intent.getStringExtra("_id"), context, true);
             abortBroadcast();
             if (tuple == null)
                 return;

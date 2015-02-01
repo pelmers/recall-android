@@ -19,6 +19,7 @@ public class ModifyActivity extends ActionBarActivity {
     // position of this thing in the list of things
     private int position = 0;
     private ThingPersistence loader;
+    private List<RecallThing> things;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,9 +31,13 @@ public class ModifyActivity extends ActionBarActivity {
             bar.setDisplayHomeAsUpEnabled(true);
         }
 
+        loader = ThingPersistence.getInstance(this);
+        things = loader.loadThings();
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            position = (int) extras.get("position");
+            position = RecallThing.findByID(things, (String) extras.get("_id"));
+            if (position == -1)
+                finish();
         } else {
             System.out.println("Position not found in intent bundle?");
         }
@@ -92,6 +97,7 @@ public class ModifyActivity extends ActionBarActivity {
         super.onResume();
         // makes sure loader always has valid reference to a context
         loader = ThingPersistence.getInstance(this);
+        things = loader.loadThings();
         initFields();
     }
 
@@ -99,10 +105,9 @@ public class ModifyActivity extends ActionBarActivity {
         // set text of all the fields
         EditText keyText = (EditText) findViewById(R.id.key_text);
         EditText descText = (EditText) findViewById(R.id.description_text);
-        List<RecallThing> things = loader.loadThings();
-        keyText.setText(things.get(position).getKeywords());
-        descText.setText(things.get(position).getDescription());
-        setTimes(things);
+        keyText.setText(this.things.get(position).getKeywords());
+        descText.setText(this.things.get(position).getDescription());
+        setTimes(this.things);
     }
 
     private void setTimes(List<RecallThing> things) {

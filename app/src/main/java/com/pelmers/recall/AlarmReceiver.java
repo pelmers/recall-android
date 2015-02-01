@@ -23,26 +23,20 @@ public class AlarmReceiver extends BroadcastReceiver {
         Log.d("id", id);
         ThingPersistence loader = ThingPersistence.getInstance(ctx);
         List<RecallThing> things = loader.loadThings();
-        int position = -1;
-        for (int i = 0; i < things.size(); i++) {
-            RecallThing thing = things.get(i);
-            if (thing.getId().toString().equals(id)) {
-                Log.d("recv", thing.toString());
-                thing.incrementReminder(ctx);
-                thing.setViewed(viewed);
-                position = i;
-                break;
-            }
-        }
-        loader.saveThings(things);
+        int position = RecallThing.findByID(things, id);
         if (position == -1)
             return null;
+        RecallThing thing = things.get(position);
+        Log.d("recv", thing.toString());
+        thing.incrementReminder(ctx);
+        thing.setViewed(viewed);
+        loader.saveThings(things);
         return new RecallThing.ThingPositionTuple(things.get(position), position);
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        String id = intent.getStringExtra("thingID");
+        String id = intent.getStringExtra("_id");
 
         RecallThing.ThingPositionTuple tuple = incrementID(id, context, false);
         if (tuple == null) {
@@ -53,11 +47,11 @@ public class AlarmReceiver extends BroadcastReceiver {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.logo)
-                        .setContentTitle("Recall")
-                        .setContentText(tuple.thing.getKeywords())
+                        .setContentTitle(tuple.thing.getKeywords())
+                        .setContentText(tuple.thing.getDescription())
                         .setAutoCancel(true);
         Intent result = new Intent(context, ViewActivity.class);
-        result.putExtra("position", tuple.position);
+        result.putExtra("_id", tuple.thing.getId().toString());
         Intent parent = new Intent(context, MainActivity.class);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         stackBuilder.addNextIntent(parent);

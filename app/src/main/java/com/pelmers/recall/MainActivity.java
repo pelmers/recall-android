@@ -23,7 +23,7 @@ public class MainActivity extends ActionBarActivity {
     protected static final int THEME_COLOR = Color.rgb(70, 183, 255);
 
     private List<RecallThing> things;
-    private ArrayAdapter<RecallThing> mainAdapter;
+    private RecallAdapter mainAdapter;
     private ThingPersistence loader;
     private ListView mainListView;
     private BroadcastReceiver receiver;
@@ -38,7 +38,7 @@ public class MainActivity extends ActionBarActivity {
     private void updateAdapter() {
         // load things from persistent storage
         things = loader.loadThings();
-        mainAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.thing, android.R.id.text1, things);
+        mainAdapter = new RecallAdapter(getApplicationContext(), R.layout.thing, android.R.id.text1, things);
         mainListView.setAdapter(mainAdapter);
     }
 
@@ -51,7 +51,7 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent viewIntent = new Intent(getBaseContext(), ViewActivity.class);
-                viewIntent.putExtra("position", position);
+                viewIntent.putExtra("_id", things.get(position).getId().toString());
                 startActivity(viewIntent);
                 mainAdapter.notifyDataSetChanged();
             }
@@ -60,7 +60,7 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent modifyIntent = new Intent(getBaseContext(), ModifyActivity.class);
-                modifyIntent.putExtra("position", position);
+                modifyIntent.putExtra("_id", things.get(position).getId().toString());
                 startActivity(modifyIntent);
                 mainAdapter.notifyDataSetChanged();
                 return true;
@@ -114,7 +114,7 @@ public class MainActivity extends ActionBarActivity {
     private class MainReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            AlarmReceiver.incrementID(intent.getStringExtra("thingID"), context, false);
+            AlarmReceiver.incrementID(intent.getStringExtra("_id"), context, false);
             updateAdapter();
             abortBroadcast();
         }
