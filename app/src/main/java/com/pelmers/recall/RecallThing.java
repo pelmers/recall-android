@@ -25,13 +25,14 @@ public class RecallThing implements Serializable {
     private static final long FIRST_REMINDER = 10;
     // Exponential scaling factor
     private static final double REPETITION_SPACING = 3;
+    protected static final String ACTION = "com.pelmers.recall.BROADCAST";
 
     private String keywords;
     private String description;
     private Date nextReminder;
     private UUID id;
     private int alarmID;
-    private int timesReminded = 0;
+    private int timesReminded = -1;
     private boolean viewed = true;
 
     public RecallThing(String key, String description, Context ctx) {
@@ -82,7 +83,7 @@ public class RecallThing implements Serializable {
         // multiply by 1000 to go to milliseconds
         long nextInterval = (long) Math.pow(REPETITION_SPACING, timesReminded) * FIRST_REMINDER * 1000;
         nextReminder.setTime(nextReminder.getTime() + nextInterval);
-        Intent alarmIntent = new Intent(context, AlarmReceiver.class);
+        Intent alarmIntent = new Intent(ACTION);
         alarmIntent.putExtra("thingID", id.toString());
         PendingIntent sender = PendingIntent.getBroadcast(context, alarmID, alarmIntent, PendingIntent.FLAG_ONE_SHOT);
         Log.d("recall", "id: " + id);
@@ -92,7 +93,7 @@ public class RecallThing implements Serializable {
 
     public void cancelBroadcast(Context context) {
         // please call this before the recall thing is replaced
-        Intent alarmIntent = new Intent(context, AlarmReceiver.class);
+        Intent alarmIntent = new Intent(ACTION);
         PendingIntent.getBroadcast(context, alarmID, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT).cancel();
     }
 
@@ -104,7 +105,21 @@ public class RecallThing implements Serializable {
         this.viewed = viewed;
     }
 
+    public int getAlarmID() {
+        return alarmID;
+    }
+
     public UUID getId() {
         return id;
+    }
+
+    public static class ThingPositionTuple {
+        public RecallThing thing;
+        public int position;
+
+        public ThingPositionTuple(RecallThing thing, int position) {
+            this.thing = thing;
+            this.position = position;
+        }
     }
 }

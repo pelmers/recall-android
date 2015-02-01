@@ -1,6 +1,9 @@
 package com.pelmers.recall;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.ActionBarActivity;
@@ -23,10 +26,12 @@ public class MainActivity extends ActionBarActivity {
     private ArrayAdapter<RecallThing> mainAdapter;
     private ThingPersistence loader;
     private ListView mainListView;
+    private BroadcastReceiver receiver;
 
     @Override
     protected void onPause() {
         super.onPause();
+        unregisterReceiver(receiver);
         loader.saveThings(things);
     }
 
@@ -61,6 +66,10 @@ public class MainActivity extends ActionBarActivity {
                 return true;
             }
         });
+        receiver = new MainReceiver();
+        IntentFilter filter = new IntentFilter(RecallThing.ACTION);
+        filter.setPriority(100);
+        registerReceiver(receiver, filter);
     }
 
     @Override
@@ -100,5 +109,14 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private class MainReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            AlarmReceiver.incrementID(intent.getStringExtra("thingID"), context, false);
+            updateAdapter();
+            abortBroadcast();
+        }
     }
 }

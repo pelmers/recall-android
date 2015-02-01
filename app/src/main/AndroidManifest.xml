@@ -27,9 +27,16 @@
         <activity
             android:name=".ViewActivity"
             android:label="@string/title_activity_view" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
         </activity>
 
-        <receiver  android:process=":remote" android:name="AlarmReceiver"/>
+        <receiver android:process=":remote" android:name="com.pelmers.recall.AlarmReceiver">
+            <intent-filter android:icon="@drawable/logo">
+                <action android:name="com.pelmers.recall.BROADCAST" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
