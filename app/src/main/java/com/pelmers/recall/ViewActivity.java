@@ -118,14 +118,17 @@ public class ViewActivity extends ActionBarActivity {
             TextView feedbackText = (TextView) findViewById(R.id.feedback_text);
             int selected = feedbackGroup.getCheckedRadioButtonId();
             RadioButton rb = (RadioButton) feedbackGroup.findViewById(selected);
-            Toast.makeText(this, "Feedback saved: " + rb.getText(), Toast.LENGTH_SHORT).show();
+            PreferenceLoader preferenceLoader = PreferenceLoader.getInstance(this);
+            Preferences prefs = preferenceLoader.loadPreferences();
             if (selected == R.id.feedback_early) {
-                RecallThing.FIRST_REMINDER *= 1.1;
+                prefs.setFirstReminder((long) (prefs.getFirstReminder() * 1.1));
             } else if (selected == R.id.feedback_late) {
-                RecallThing.FIRST_REMINDER /= 1.1;
+                prefs.setFirstReminder((long) (prefs.getFirstReminder() / 1.1));
             }
+            preferenceLoader.savePreferences(prefs);
             feedbackGroup.removeAllViews();
             feedbackText.setText("");
+            Toast.makeText(this, "Feedback saved: " + rb.getText(), Toast.LENGTH_SHORT).show();
             feedbackRemoved = true;
         }
     }

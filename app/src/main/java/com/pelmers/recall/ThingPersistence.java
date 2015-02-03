@@ -32,12 +32,7 @@ public class ThingPersistence {
     protected void saveThings(List<RecallThing> things) {
         // save things to persistent storage
         try {
-            FileOutputStream outputStream = context.openFileOutput(FILENAME, Context.MODE_PRIVATE);
-            ObjectOutputStream objectStream = new ObjectOutputStream(outputStream);
-            objectStream.writeObject(things);
-            objectStream.close();
-            outputStream.close();
-            //Toast.makeText(context, "Recall saved", Toast.LENGTH_SHORT).show();
+            ObjectIO.saveObject(things, FILENAME, context);
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(context, "Error saving lists", Toast.LENGTH_SHORT).show();
@@ -47,12 +42,8 @@ public class ThingPersistence {
     protected List<RecallThing> loadThings() {
         List<RecallThing> things;
         try {
-            FileInputStream inputStream = context.openFileInput(FILENAME);
-            ObjectInputStream objectStream = new ObjectInputStream(inputStream);
             //noinspection unchecked
-            things = (List<RecallThing>) objectStream.readObject();
-            objectStream.close();
-            inputStream.close();
+            things = (List<RecallThing>) ObjectIO.loadObject(FILENAME, context);
         } catch (IOException e) {
             // assume that if we can't load that is because we haven't saved yet
             things = new ArrayList<>();

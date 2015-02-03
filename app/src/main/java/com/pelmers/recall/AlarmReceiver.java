@@ -19,6 +19,8 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     protected static RecallThing.ThingPositionTuple incrementID(String id, Context ctx, boolean viewed) {
         // increment the reminder for this thing id
+        if (id == null)
+            return null;
         Log.d("id", id);
         ThingPersistence loader = ThingPersistence.getInstance(ctx);
         List<RecallThing> things = loader.loadThings();

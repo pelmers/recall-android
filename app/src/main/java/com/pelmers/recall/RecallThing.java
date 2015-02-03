@@ -19,9 +19,9 @@ import java.util.UUID;
  */
 public class RecallThing implements Serializable, Comparable<RecallThing> {
     // Time until first reminder, in seconds
-    protected static long FIRST_REMINDER = 10;
+    protected static long DEFAULT_FIRST_REMINDER = 10;
     // Exponential scaling factor
-    protected static double REPETITION_SPACING = 3;
+    protected static double DEFAULT_REPETITION_SPACING = 3;
     protected static final String ACTION = "com.pelmers.recall.BROADCAST";
 
     private String keywords;
@@ -100,8 +100,11 @@ public class RecallThing implements Serializable, Comparable<RecallThing> {
     public void incrementReminder(Context context) {
         // increment the reminder and set an alarm for the next one.
         timesReminded++;
+        // load the preferences
+        PreferenceLoader preferenceLoader = PreferenceLoader.getInstance(context);
+        Preferences prefs = preferenceLoader.loadPreferences();
         // multiply by 1000 to go to milliseconds
-        long nextInterval = (long) Math.pow(REPETITION_SPACING, timesReminded) * FIRST_REMINDER * 1000;
+        long nextInterval = (long) Math.pow(prefs.getExponentBase(), timesReminded) * prefs.getFirstReminder() * 1000;
         nextReminder.setTime(nextReminder.getTime() + nextInterval);
         Intent alarmIntent = new Intent(ACTION);
         alarmIntent.putExtra("_id", id.toString());
