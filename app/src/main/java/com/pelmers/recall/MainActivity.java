@@ -30,6 +30,16 @@ public class MainActivity extends ActionBarActivity {
     private ListView mainListView;
     private BroadcastReceiver receiver;
 
+    public static void launchActivity(Context ctx, Class<?> activity) {
+        launchActivity(ctx, activity, "");
+    }
+
+    public static void launchActivity(Context ctx, Class<?> activity, String _id) {
+        Intent intent = new Intent(ctx, activity);
+        intent.putExtra("_id", _id);
+        ctx.startActivity(intent);
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -54,18 +64,14 @@ public class MainActivity extends ActionBarActivity {
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent viewIntent = new Intent(getBaseContext(), ViewActivity.class);
-                viewIntent.putExtra("_id", things.get(position).getId().toString());
-                startActivity(viewIntent);
+                launchActivity(getBaseContext(), ViewActivity.class, things.get(position).getId().toString());
                 mainAdapter.notifyDataSetChanged();
             }
         });
         mainListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent modifyIntent = new Intent(getBaseContext(), ModifyActivity.class);
-                modifyIntent.putExtra("_id", things.get(position).getId().toString());
-                startActivity(modifyIntent);
+                launchActivity(getBaseContext(), ModifyActivity.class, things.get(position).getId().toString());
                 mainAdapter.notifyDataSetChanged();
                 return true;
             }
@@ -114,11 +120,11 @@ public class MainActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            launchActivity(this, SettingsActivity.class);
             return true;
         } else if (id == R.id.action_add) {
             // start an add activity
-            Intent addIntent = new Intent(getBaseContext(), AddActivity.class);
-            startActivity(addIntent);
+            launchActivity(this, AddActivity.class);
             return true;
         }
 

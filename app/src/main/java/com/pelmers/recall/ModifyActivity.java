@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import static com.pelmers.recall.MainActivity.launchActivity;
+
 
 public class ModifyActivity extends ActionBarActivity {
 
@@ -31,7 +33,6 @@ public class ModifyActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify);
-        setTitle("Modify");
         android.support.v7.app.ActionBar bar = getSupportActionBar();
         if (bar != null) {
             bar.setBackgroundDrawable(new ColorDrawable(MainActivity.THEME_COLOR));
@@ -154,6 +155,7 @@ public class ModifyActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            launchActivity(this, SettingsActivity.class);
             return true;
         } else if (id == android.R.id.home) {
             finish();

@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import static com.pelmers.recall.MainActivity.launchActivity;
+
 
 public class AddActivity extends ActionBarActivity {
 
@@ -19,7 +21,6 @@ public class AddActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
-        setTitle("Add");
         android.support.v7.app.ActionBar bar = getSupportActionBar();
         if (bar != null) {
             bar.setBackgroundDrawable(new ColorDrawable(MainActivity.THEME_COLOR));
@@ -62,6 +63,7 @@ public class AddActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            launchActivity(this, SettingsActivity.class);
             return true;
         } else if (id == android.R.id.home) {
             finish();

@@ -23,6 +23,8 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import static com.pelmers.recall.MainActivity.launchActivity;
+
 public class ViewActivity extends ActionBarActivity {
 
     private int position;
@@ -157,6 +159,7 @@ public class ViewActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            launchActivity(this, SettingsActivity.class);
             return true;
         } else if (id == android.R.id.home) {
             finish();

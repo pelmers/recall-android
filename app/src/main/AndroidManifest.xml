@@ -32,11 +32,22 @@
                 android:value=".MainActivity" />
         </activity>
 
-        <receiver android:process=":remote" android:name="com.pelmers.recall.AlarmReceiver">
-            <intent-filter android:icon="@drawable/logo">
+        <receiver
+            android:name=".AlarmReceiver"
+            android:process=":remote" >
+            <intent-filter android:icon="@drawable/logo" >
                 <action android:name="com.pelmers.recall.BROADCAST" />
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.pelmers.recall.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
