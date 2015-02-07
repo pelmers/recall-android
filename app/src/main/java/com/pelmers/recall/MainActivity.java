@@ -37,6 +37,7 @@ public class MainActivity extends ActionBarActivity {
     public static void launchActivity(Context ctx, Class<?> activity, String _id) {
         Intent intent = new Intent(ctx, activity);
         intent.putExtra("_id", _id);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         ctx.startActivity(intent);
     }
 
