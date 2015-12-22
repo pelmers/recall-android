@@ -13,7 +13,7 @@ import android.widget.TextView;
 import java.util.List;
 
 /**
- * Custom adapter based on ArrayAdapter
+ * Custom adapter based on ArrayAdapter for recall notes.
  */
 public class RecallAdapter extends ArrayAdapter<RecallNote> {
     public RecallAdapter(Context activity, int layout_id, int text_id, List<RecallNote> notes) {
@@ -29,8 +29,10 @@ public class RecallAdapter extends ArrayAdapter<RecallNote> {
         return view;
     }
 
+    /**
+     * Mark the last line of the view as smaller.
+     */
     private void markSmaller(TextView view) {
-        // mark the last line of view as smaller
         String text = String.valueOf(view.getText());
         int lastN = text.lastIndexOf('\n');
         view.setText(Html.fromHtml(String.format("%s<br><small><small><i>%s</i></small></small>",
@@ -39,8 +41,7 @@ public class RecallAdapter extends ArrayAdapter<RecallNote> {
     }
 
     /**
-     * Mark a text view as incomplete (should undo what markComplete does)
-     * @param textView to mark incomplete
+     * Mark a text view as unread.
      */
     public void markUnread(TextView textView) {
         SpannableString spannableString = new SpannableString(textView.getText());

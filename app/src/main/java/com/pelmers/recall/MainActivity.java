@@ -20,20 +20,29 @@ import java.util.Date;
 import java.util.List;
 
 
+/**
+ * The main activity for the app, the first one the user sees.
+ */
 public class MainActivity extends ActionBarActivity {
 
     protected static final int THEME_COLOR = Color.rgb(70, 183, 255);
 
     private List<RecallNote> notes;
     private RecallAdapter mainAdapter;
-    private NotePersistence loader;
+    private NotesLoader loader;
     private ListView mainListView;
     private BroadcastReceiver receiver;
 
+    /**
+     * Launch an activity with "" _id field.
+     */
     public static void launchActivity(Context ctx, Class<?> activity) {
         launchActivity(ctx, activity, "");
     }
 
+    /**
+     * Launch an activity with given _id field.
+     */
     public static void launchActivity(Context ctx, Class<?> activity, String _id) {
         Intent intent = new Intent(ctx, activity);
         intent.putExtra("_id", _id);
@@ -45,18 +54,23 @@ public class MainActivity extends ActionBarActivity {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(receiver);
-        loader.saveThings(notes);
+        loader.saveNotes(notes);
     }
 
+    /**
+     * Reload notes from persistent storage and update the list view adapter.
+     */
     private void updateAdapter() {
-        // load notes from persistent storage
-        notes = loader.loadThings();
+        notes = loader.loadNotes();
         Collections.sort(notes);
         mainAdapter = new RecallAdapter(getApplicationContext(), R.layout.note, android.R.id.text1, notes);
         mainListView.setAdapter(mainAdapter);
-        loader.saveThings(notes);
+        loader.saveNotes(notes);
     }
 
+    /**
+     * Reactivate the view by reloading the list adapter and setting click listeners.
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -91,17 +105,17 @@ public class MainActivity extends ActionBarActivity {
         android.support.v7.app.ActionBar bar = getSupportActionBar();
         if (bar != null)
             bar.setBackgroundDrawable(new ColorDrawable(THEME_COLOR));
-        loader = NotePersistence.getInstance(this);
+        loader = NotesLoader.getInstance(this);
         // if we somehow skipped over something, fast-forward it
         Date now = new Date();
-        notes = loader.loadThings();
+        notes = loader.loadNotes();
         for (RecallNote t : notes) {
             while (t.getNextReminder().compareTo(now) < 0) {
                 t.incrementReminder(this);
                 Log.d("Main", "forwarding something: " + t);
             }
         }
-        loader.saveThings(notes);
+        loader.saveNotes(notes);
     }
 
 
@@ -114,9 +128,6 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -132,6 +143,9 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * This receiver catches our alarms if we're in the main view.
+     */
     private class MainReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {

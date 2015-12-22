@@ -10,22 +10,30 @@ import java.util.List;
 /**
  * Singleton handle loading and saving notes to some file.
  */
-public class NotePersistence {
+public class NotesLoader {
     private static final String FILENAME = "THINGS";
-    private static NotePersistence instance = null;
+    private static NotesLoader instance = null;
     private Context context = null;
 
-    public static NotePersistence getInstance(Context ctx) {
+    /**
+     * @param ctx current app context
+     * @return a note loader for this app context.
+     */
+    public static NotesLoader getInstance(Context ctx) {
         if (instance == null)
-            instance = new NotePersistence();
+            instance = new NotesLoader();
         instance.context = ctx;
         return instance;
     }
 
-    private NotePersistence() {
+    // Private constructor to enforce singleton.
+    private NotesLoader() {
     }
 
-    protected void saveThings(List<RecallNote> notes) {
+    /**
+     * Save a list of notes.
+     */
+    protected void saveNotes(List<RecallNote> notes) {
         // save notes to persistent storage
         try {
             ObjectIO.saveObject(notes, FILENAME, context);
@@ -35,7 +43,10 @@ public class NotePersistence {
         }
     }
 
-    protected List<RecallNote> loadThings() {
+    /**
+     * Load a previously saved list of notes.
+     */
+    protected List<RecallNote> loadNotes() {
         List<RecallNote> notes;
         try {
             //noinspection unchecked

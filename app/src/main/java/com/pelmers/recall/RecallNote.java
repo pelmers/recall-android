@@ -18,20 +18,39 @@ import java.util.UUID;
  * Class for recall notes, the user-defined items to recall.
  */
 public class RecallNote implements Serializable, Comparable<RecallNote> {
-    // Time until first reminder, in seconds
-    protected static long DEFAULT_FIRST_REMINDER = 10;
-    // Exponential scaling factor
-    protected static double DEFAULT_REPETITION_SPACING = 3;
     protected static final String ACTION = "com.pelmers.recall.BROADCAST";
-
+    /**
+     * User-defined keywords field for this note.
+     */
     private String keywords;
+    /**
+     * User-defined description field for the note.
+     */
     private String description;
+    /**
+     * When to trigger the next reminder of this note.
+     */
     private Date nextReminder;
+    /**
+     * UUID for this note.
+     */
     private UUID id;
+    /**
+     * ID for notification alarms associated with this note. Ideally it's unique.
+     */
     private int alarmID;
+    /**
+     * Count the number of times we have reminded this note.
+     */
     private int timesReminded = -1;
+    /**
+     * Whether the user has viewed this note since the last reminder.
+     */
     private boolean viewed = true;
 
+    /**
+     * Construct note using given keyword and description fields, and the current app context.
+     */
     public RecallNote(String key, String description, Context ctx) {
         this.keywords = key;
         this.description = description;
@@ -102,23 +121,30 @@ public class RecallNote implements Serializable, Comparable<RecallNote> {
         return keywords + "\n" + formatDate(nextReminder);
     }
 
+    /**
+     * Increment the reminder count, compute the next reminder time,
+     * and set an alarm for a notification.
+     */
     public void incrementReminder(Context context) {
         // increment the reminder and set an alarm for the next one.
         timesReminded++;
-        // load the preferences
-        PreferenceLoader preferenceLoader = PreferenceLoader.getInstance(context);
-        Preferences prefs = preferenceLoader.loadPreferences();
-        // multiply by 1000 to go to milliseconds
+        Preferences prefs = PreferenceLoader.getInstance(context).loadPreferences();
+        // Multiply by 1000 to go to milliseconds
         long nextInterval = (long) Math.pow(prefs.getExponentBase(), timesReminded) * prefs.getFirstReminder() * 1000;
         nextReminder.setTime(nextReminder.getTime() + nextInterval);
+        // Set our alarm with the alarm manager service.
         Intent alarmIntent = new Intent(ACTION);
         alarmIntent.putExtra("_id", id.toString());
         PendingIntent sender = PendingIntent.getBroadcast(context, alarmID, alarmIntent, PendingIntent.FLAG_ONE_SHOT);
         Log.d("recall", "id: " + id);
-        AlarmManager alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmMgr.set(AlarmManager.RTC, nextReminder.getTime(), sender);
     }
 
+    /**
+     * Cancel any pending alarm broadcast for this note.
+     * Call before removing the note or resetting its reminders.
+     */
     public void cancelBroadcast(Context context) {
         // please call this before the recall note is replaced
         Intent alarmIntent = new Intent(ACTION);
@@ -141,6 +167,10 @@ public class RecallNote implements Serializable, Comparable<RecallNote> {
         return id;
     }
 
+    /**
+     * Sort by whether the item is viewed; break ties by time.
+     * @return less than 0 if this should come before another, > 0 otherwise
+     */
     @Override
     public int compareTo(@NonNull RecallNote another) {
         if (another.isViewed() && !isViewed())
@@ -150,15 +180,4 @@ public class RecallNote implements Serializable, Comparable<RecallNote> {
         return nextReminder.compareTo(another.getNextReminder());
     }
 
-    public static class NotePositionTuple {
-        public RecallNote note;
-        public int position;
-        public List<RecallNote> notes;
-
-        public NotePositionTuple(RecallNote note, int position, List<RecallNote> notes) {
-            this.note = note;
-            this.position = position;
-            this.notes = notes;
-        }
-    }
 }

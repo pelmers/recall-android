@@ -1,8 +1,8 @@
 package com.pelmers.recall;
 
 import android.graphics.drawable.ColorDrawable;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Activity for changing app settings.
+ */
 public class SettingsActivity extends ActionBarActivity {
 
     private static final String TAG = "SettingsActivity";
@@ -91,7 +94,7 @@ public class SettingsActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // restore the settings
+        // restore the settings from disk
         PreferenceLoader preferenceLoader = PreferenceLoader.getInstance(this);
         Preferences preferences = preferenceLoader.loadPreferences();
         firstReminderText.setText(Long.toString(preferences.getFirstReminder()));
@@ -102,7 +105,7 @@ public class SettingsActivity extends ActionBarActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        // save the settings
+        // save the settings to disk
         PreferenceLoader preferenceLoader = PreferenceLoader.getInstance(this);
         Preferences preferences = preferenceLoader.loadPreferences();
         try {
@@ -128,9 +131,6 @@ public class SettingsActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement

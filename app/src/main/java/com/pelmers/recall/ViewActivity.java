@@ -42,8 +42,8 @@ public class ViewActivity extends ActionBarActivity {
         }
 
         Bundle extras = getIntent().getExtras();
-        NotePersistence loader = NotePersistence.getInstance(this);
-        List<RecallNote> notes = loader.loadThings();
+        NotesLoader loader = NotesLoader.getInstance(this);
+        List<RecallNote> notes = loader.loadNotes();
         if (extras != null) {
             position = RecallNote.findByID(notes, (String) extras.get("_id"));
             if (position == -1) {
@@ -98,7 +98,7 @@ public class ViewActivity extends ActionBarActivity {
             feedbackText.setText("");
             feedbackRemoved = true;
         }
-        loader.saveThings(notes);
+        loader.saveNotes(notes);
     }
 
     @Override
@@ -152,9 +152,6 @@ public class ViewActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -172,12 +169,12 @@ public class ViewActivity extends ActionBarActivity {
     private class ViewReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            RecallNote.NotePositionTuple tuple = AlarmReceiver.incrementID(intent.getStringExtra("_id"), context, true);
+            Triple<RecallNote, Integer, List<RecallNote>> triple = AlarmReceiver.incrementID(intent.getStringExtra("_id"), context, true);
             abortBroadcast();
-            if (tuple == null)
+            if (triple == null)
                 return;
-            if (tuple.position == position) {
-                setTimes(tuple.note);
+            if (triple.second == position) {
+                setTimes(triple.first);
             }
         }
     }

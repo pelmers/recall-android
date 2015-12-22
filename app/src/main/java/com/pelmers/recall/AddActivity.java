@@ -14,9 +14,14 @@ import java.util.List;
 
 import static com.pelmers.recall.MainActivity.launchActivity;
 
-
+/**
+ * The activity for the screen to add a new note.
+ */
 public class AddActivity extends ActionBarActivity {
 
+    /**
+     * Instantiate the view and set a listener for the save button.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,18 +32,18 @@ public class AddActivity extends ActionBarActivity {
             bar.setDisplayHomeAsUpEnabled(true);
         }
 
-        final NotePersistence loader = NotePersistence.getInstance(this);
+        final NotesLoader loader = NotesLoader.getInstance(this);
         Button saveButton = (Button) findViewById(R.id.save_button);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<RecallNote> things = loader.loadThings();
+                List<RecallNote> notes = loader.loadNotes();
                 String key = ((EditText) findViewById(R.id.key_text)).getText().toString();
                 String desc = ((EditText) findViewById(R.id.description_text)).getText().toString();
                 // only make it if at least one is nonempty
                 if (key.length() != 0 || desc.length() != 0) {
-                    things.add(new RecallNote(key, desc, getBaseContext()));
-                    loader.saveThings(things);
+                    notes.add(new RecallNote(key, desc, getBaseContext()));
+                    loader.saveNotes(notes);
                     finish();
                 } else {
                     Toast.makeText(getBaseContext(), "Key or description not set", Toast.LENGTH_SHORT).show();
@@ -47,6 +52,9 @@ public class AddActivity extends ActionBarActivity {
         });
     }
 
+    /**
+     * Inflate options into the action bar at the top.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -54,11 +62,11 @@ public class AddActivity extends ActionBarActivity {
         return true;
     }
 
+    /**
+     * Handle clicks on the action bar at the top.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
