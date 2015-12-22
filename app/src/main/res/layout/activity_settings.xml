@@ -74,4 +74,14 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Confirm keywords on reminder"
+        android:id="@+id/checkbox_confirm_keywords"
+        android:layout_below="@+id/scaling_factor_field"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:checked="true" />
+
 </RelativeLayout>

@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -27,6 +28,7 @@ public class SettingsActivity extends ActionBarActivity {
     private static final String TAG = "SettingsActivity";
     private EditText firstReminderText;
     private EditText scalingFactorText;
+    private CheckBox checkBoxConfirmKeywords;
     private List<String> timesList;
     private ArrayAdapter<String> timesListAdapter;
 
@@ -52,6 +54,7 @@ public class SettingsActivity extends ActionBarActivity {
         firstReminderText.addTextChangedListener(new SettingsTextWatcher());
         scalingFactorText = (EditText) findViewById(R.id.scaling_factor_field);
         scalingFactorText.addTextChangedListener(new SettingsTextWatcher());
+        checkBoxConfirmKeywords = (CheckBox) findViewById(R.id.checkbox_confirm_keywords);
         ListView timesListView = (ListView) findViewById(R.id.reminder_times_list);
         timesListAdapter = new ArrayAdapter<>(this, R.layout.note, android.R.id.text1, timesList);
         timesListView.setAdapter(timesListAdapter);
@@ -99,6 +102,7 @@ public class SettingsActivity extends ActionBarActivity {
         Preferences preferences = preferenceLoader.loadPreferences();
         firstReminderText.setText(Long.toString(preferences.getFirstReminder()));
         scalingFactorText.setText(Double.toString(preferences.getExponentBase()));
+        checkBoxConfirmKeywords.setActivated(preferences.confirmKeywords());
         updateTimesList();
     }
 
@@ -111,6 +115,7 @@ public class SettingsActivity extends ActionBarActivity {
         try {
             preferences.setFirstReminder(Long.parseLong(firstReminderText.getText().toString()));
             preferences.setExponentBase(Double.parseDouble(scalingFactorText.getText().toString()));
+            preferences.setConfirmKeywords(checkBoxConfirmKeywords.isActivated());
             // min the first reminder at 60 seconds, and the exponent at 1
             preferences.setFirstReminder(Math.max(60, preferences.getFirstReminder()));
             preferences.setExponentBase(Math.max(1, preferences.getExponentBase()));

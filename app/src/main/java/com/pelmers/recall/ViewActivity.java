@@ -79,17 +79,20 @@ public class ViewActivity extends ActionBarActivity {
                 mNotificationManager.notify(0, builder.build());
             else
                 mNotificationManager.cancel(0);
-            // show an alert dialog to ask them for input
-            TextInputAlertDialog.showInputAlertDialog(this, "Retype your keywords", "OK", new TextInputAlertDialog.TextInputClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, String text) {
-                    if (text.equals(item.getKeywords())) {
-                        Toast.makeText(getBaseContext(), "Correct", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getBaseContext(), "Incorrect", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
+            // show an alert dialog to ask them for input, unless they've set the pref to false
+            if (PreferenceLoader.getInstance(this).loadPreferences().confirmKeywords()) {
+                TextInputAlertDialog.showInputAlertDialog(this, "Retype your keywords", "OK",
+                        new TextInputAlertDialog.TextInputClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, String text) {
+                                if (text.equals(item.getKeywords())) {
+                                    Toast.makeText(getBaseContext(), "Correct", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(getBaseContext(), "Incorrect", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+            }
         } else {
             // already viewed, hide feedback buttons
             RadioGroup feedbackGroup = (RadioGroup) findViewById(R.id.feedback_group);
