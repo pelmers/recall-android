@@ -39,7 +39,7 @@ public class NotesLoader {
             ObjectIO.saveObject(notes, FILENAME, context);
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(context, "Error saving lists", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Error saving notes", Toast.LENGTH_SHORT).show();
         }
     }
 

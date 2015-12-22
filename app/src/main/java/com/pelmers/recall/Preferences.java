@@ -7,9 +7,9 @@ import java.io.Serializable;
  */
 public class Preferences implements Serializable {
     // Time until first reminder, in seconds
-    private static long DEFAULT_FIRST_REMINDER = 10;
+    private static long DEFAULT_FIRST_REMINDER = 9000;
     // Exponential scaling factor
-    private static double DEFAULT_REPETITION_SPACING = 3;
+    private static double DEFAULT_REPETITION_SPACING = 2.0;
     private long firstReminder;
     private double exponentBase;
     private boolean confirmKeywords;

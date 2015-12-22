@@ -52,21 +52,22 @@ public class ViewActivity extends ActionBarActivity {
             }
         } else {
             Log.d("???", "Position not found in intent bundle?");
+            finish();
         }
-
         final RecallNote item = notes.get(position);
-        // set the text for key and description
-        TextView keyText = (TextView) findViewById(R.id.key_text);
-        TextView descText = (TextView) findViewById(R.id.description_text);
-        keyText.setText(item.getKeywords());
-        descText.setText(item.getDescription());
-        descText.setTextColor(Color.BLACK);
-        setTimes(notes.get(position));
+
         Button doneButton = (Button) findViewById(R.id.done_button);
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+        Button modifyButton = (Button) findViewById(R.id.modify_button);
+        modifyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchActivity(ViewActivity.this, ModifyActivity.class, item.getId().toString());
             }
         });
         if (!item.isViewed()) {
@@ -111,6 +112,14 @@ public class ViewActivity extends ActionBarActivity {
         IntentFilter filter = new IntentFilter(RecallNote.ACTION);
         filter.setPriority(100);
         registerReceiver(receiver, filter);
+        RecallNote item = NotesLoader.getInstance(this).loadNotes().get(position);
+        // set the text for key and description
+        TextView keyText = (TextView) findViewById(R.id.key_text);
+        TextView descText = (TextView) findViewById(R.id.description_text);
+        keyText.setText(item.getKeywords());
+        descText.setText(item.getDescription());
+        descText.setTextColor(Color.BLACK);
+        setTimes(item);
     }
 
     @Override

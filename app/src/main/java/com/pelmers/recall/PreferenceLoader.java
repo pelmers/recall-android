@@ -36,6 +36,7 @@ public class PreferenceLoader {
     protected void savePreferences(Preferences prefs) {
         try {
             ObjectIO.saveObject(prefs, FILENAME, context);
+            Toast.makeText(context, "Preferences saved.", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(context, "Error saving preferences", Toast.LENGTH_SHORT).show();

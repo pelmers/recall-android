@@ -102,7 +102,7 @@ public class SettingsActivity extends ActionBarActivity {
         Preferences preferences = preferenceLoader.loadPreferences();
         firstReminderText.setText(Long.toString(preferences.getFirstReminder()));
         scalingFactorText.setText(Double.toString(preferences.getExponentBase()));
-        checkBoxConfirmKeywords.setActivated(preferences.confirmKeywords());
+        checkBoxConfirmKeywords.setChecked(preferences.confirmKeywords());
         updateTimesList();
     }
 
@@ -115,12 +115,11 @@ public class SettingsActivity extends ActionBarActivity {
         try {
             preferences.setFirstReminder(Long.parseLong(firstReminderText.getText().toString()));
             preferences.setExponentBase(Double.parseDouble(scalingFactorText.getText().toString()));
-            preferences.setConfirmKeywords(checkBoxConfirmKeywords.isActivated());
+            preferences.setConfirmKeywords(checkBoxConfirmKeywords.isChecked());
             // min the first reminder at 60 seconds, and the exponent at 1
             preferences.setFirstReminder(Math.max(60, preferences.getFirstReminder()));
             preferences.setExponentBase(Math.max(1, preferences.getExponentBase()));
             preferenceLoader.savePreferences(preferences);
-            Toast.makeText(this, "Preferences saved.", Toast.LENGTH_SHORT).show();
         } catch (NumberFormatException ex) {
             Log.d(TAG, "Format exception on update" + ex.toString());
             Toast.makeText(this, "Check number format.", Toast.LENGTH_SHORT).show();
