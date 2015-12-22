@@ -113,7 +113,14 @@ public class ViewActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter(RecallNote.ACTION);
         filter.setPriority(100);
         registerReceiver(receiver, filter);
-        RecallNote item = NotesLoader.getInstance(this).loadNotes().get(position);
+        RecallNote item;
+        try {
+            item = NotesLoader.getInstance(this).loadNotes().get(position);
+        } catch (IndexOutOfBoundsException ex) {
+            // potentially we deleted the item, and then hit back from modify activity.
+            finish();
+            return;
+        }
         // set the text for key and description
         TextView keyText = (TextView) findViewById(R.id.key_text);
         TextView descText = (TextView) findViewById(R.id.description_text);
