@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -129,18 +130,32 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        return handleMenuBarClick(this, id) || super.onOptionsItemSelected(item);
+    }
 
-        //noinspection SimplifiableIfStatement
+    /**
+     * Handle context-invariant types of clicks to the action bar.
+     * @return true if we handled the click, false otherwise.
+     */
+    protected static boolean handleMenuBarClick(Context context, int id) {
         if (id == R.id.action_settings) {
-            launchActivity(this, SettingsActivity.class);
+            // start the settings activity
+            launchActivity(context, SettingsActivity.class);
             return true;
         } else if (id == R.id.action_add) {
             // start an add activity
-            launchActivity(this, AddActivity.class);
+            launchActivity(context, AddActivity.class);
             return true;
+        } else if (id == R.id.action_about) {
+            // show the about dialog
+            AboutDialog.show(context);
+            return true;
+        } else if (id == R.id.action_view_source) {
+            // point browser to github page
+            context.startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("https://github.com/pelmers/recall-android")));
         }
-
-        return super.onOptionsItemSelected(item);
+        return false;
     }
 
     /**

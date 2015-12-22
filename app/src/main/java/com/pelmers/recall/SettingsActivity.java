@@ -19,6 +19,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.pelmers.recall.MainActivity.handleMenuBarClick;
+
 
 /**
  * Activity for changing app settings.
@@ -137,8 +139,7 @@ public class SettingsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (handleMenuBarClick(this, id)) {
             return true;
         } else if (id == android.R.id.home) {
             finish();

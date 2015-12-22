@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import static com.pelmers.recall.MainActivity.launchActivity;
+import static com.pelmers.recall.MainActivity.handleMenuBarClick;
 
 /**
  * The activity for the screen to add a new note.
@@ -68,9 +68,7 @@ public class AddActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            launchActivity(this, SettingsActivity.class);
+        if (handleMenuBarClick(this, id)) {
             return true;
         } else if (id == android.R.id.home) {
             finish();

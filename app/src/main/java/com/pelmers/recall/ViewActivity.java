@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import static com.pelmers.recall.MainActivity.handleMenuBarClick;
 import static com.pelmers.recall.MainActivity.launchActivity;
 
 public class ViewActivity extends AppCompatActivity {
@@ -166,9 +167,7 @@ public class ViewActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            launchActivity(this, SettingsActivity.class);
+        if (handleMenuBarClick(this, id)) {
             return true;
         } else if (id == android.R.id.home) {
             finish();
