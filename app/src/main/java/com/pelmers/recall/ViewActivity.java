@@ -10,7 +10,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,7 +25,7 @@ import java.util.List;
 
 import static com.pelmers.recall.MainActivity.launchActivity;
 
-public class ViewActivity extends ActionBarActivity {
+public class ViewActivity extends AppCompatActivity {
 
     private int position;
     private BroadcastReceiver receiver;

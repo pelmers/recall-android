@@ -2,7 +2,7 @@ package com.pelmers.recall;
 
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,7 +17,7 @@ import static com.pelmers.recall.MainActivity.launchActivity;
 /**
  * The activity for the screen to add a new note.
  */
-public class AddActivity extends ActionBarActivity {
+public class AddActivity extends AppCompatActivity {
 
     /**
      * Instantiate the view and set a listener for the save button.

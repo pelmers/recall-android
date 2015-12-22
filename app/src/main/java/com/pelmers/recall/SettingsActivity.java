@@ -2,7 +2,7 @@ package com.pelmers.recall;
 
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Activity for changing app settings.
  */
-public class SettingsActivity extends ActionBarActivity {
+public class SettingsActivity extends AppCompatActivity {
 
     private static final String TAG = "SettingsActivity";
     private EditText firstReminderText;

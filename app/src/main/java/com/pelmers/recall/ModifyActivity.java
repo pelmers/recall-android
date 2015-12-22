@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,7 +21,7 @@ import java.util.List;
 import static com.pelmers.recall.MainActivity.launchActivity;
 
 
-public class ModifyActivity extends ActionBarActivity {
+public class ModifyActivity extends AppCompatActivity {
 
     /** Position of the note being modified in the list of notes. */
     private int position;
