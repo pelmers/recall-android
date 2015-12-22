@@ -23,10 +23,10 @@ import static com.pelmers.recall.MainActivity.launchActivity;
 
 public class ModifyActivity extends ActionBarActivity {
 
-    // position of this thing in the list of things
+    // position of this note in the list of notes
     private int position = 0;
-    private ThingPersistence loader;
-    private List<RecallThing> things;
+    private NotePersistence loader;
+    private List<RecallNote> notes;
     private ModifyReceiver receiver;
 
     @Override
@@ -39,11 +39,11 @@ public class ModifyActivity extends ActionBarActivity {
             bar.setDisplayHomeAsUpEnabled(true);
         }
 
-        loader = ThingPersistence.getInstance(this);
-        things = loader.loadThings();
+        loader = NotePersistence.getInstance(this);
+        notes = loader.loadThings();
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            position = RecallThing.findByID(things, (String) extras.get("_id"));
+            position = RecallNote.findByID(notes, (String) extras.get("_id"));
             if (position == -1)
                 finish();
         } else {
@@ -55,10 +55,10 @@ public class ModifyActivity extends ActionBarActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<RecallThing> things = loader.loadThings();
-                things.get(position).cancelBroadcast(getBaseContext());
-                things.remove(position);
-                loader.saveThings(things);
+                List<RecallNote> notes = loader.loadThings();
+                notes.get(position).cancelBroadcast(getBaseContext());
+                notes.remove(position);
+                loader.saveThings(notes);
                 finish();
             }
         });
@@ -67,12 +67,12 @@ public class ModifyActivity extends ActionBarActivity {
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<RecallThing> things = loader.loadThings();
-                RecallThing oldThing = things.get(position);
+                List<RecallNote> notes = loader.loadThings();
+                RecallNote oldThing = notes.get(position);
                 oldThing.cancelBroadcast(getBaseContext());
-                things.set(position, new RecallThing(oldThing.getKeywords(), oldThing.getDescription(), getBaseContext()));
-                setTimes(things);
-                loader.saveThings(things);
+                notes.set(position, new RecallNote(oldThing.getKeywords(), oldThing.getDescription(), getBaseContext()));
+                setTimes(notes);
+                loader.saveThings(notes);
             }
         });
 
@@ -80,20 +80,20 @@ public class ModifyActivity extends ActionBarActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<RecallThing> things = loader.loadThings();
+                List<RecallNote> notes = loader.loadThings();
                 String key = ((EditText) findViewById(R.id.key_text)).getText().toString();
                 String desc = ((EditText) findViewById(R.id.description_text)).getText().toString();
                 if (key.length() != 0 || desc.length() != 0) {
-                    things.get(position).setKeywords(key);
-                    things.get(position).setDescription(desc);
-                    loader.saveThings(things);
+                    notes.get(position).setKeywords(key);
+                    notes.get(position).setDescription(desc);
+                    loader.saveThings(notes);
                     finish();
                 } else {
                     Toast.makeText(getBaseContext(), "Key or description not set", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-        RecallThing item = things.get(position);
+        RecallNote item = notes.get(position);
         if (!item.isViewed()) {
             item.setViewed(true);
             // clear any notification
@@ -113,11 +113,11 @@ public class ModifyActivity extends ActionBarActivity {
     public void onResume() {
         super.onResume();
         // makes sure loader always has valid reference to a context
-        loader = ThingPersistence.getInstance(this);
-        things = loader.loadThings();
+        loader = NotePersistence.getInstance(this);
+        notes = loader.loadThings();
         initFields();
         receiver = new ModifyReceiver();
-        IntentFilter filter = new IntentFilter(RecallThing.ACTION);
+        IntentFilter filter = new IntentFilter(RecallNote.ACTION);
         filter.setPriority(100);
         registerReceiver(receiver, filter);
     }
@@ -126,17 +126,17 @@ public class ModifyActivity extends ActionBarActivity {
         // set text of all the fields
         EditText keyText = (EditText) findViewById(R.id.key_text);
         EditText descText = (EditText) findViewById(R.id.description_text);
-        keyText.setText(this.things.get(position).getKeywords());
-        descText.setText(this.things.get(position).getDescription());
-        setTimes(this.things);
+        keyText.setText(this.notes.get(position).getKeywords());
+        descText.setText(this.notes.get(position).getDescription());
+        setTimes(this.notes);
     }
 
-    private void setTimes(List<RecallThing> things) {
+    private void setTimes(List<RecallNote> notes) {
         // set fields related to number of times reminded and the next reminder time
         TextView numReminders = (TextView) findViewById(R.id.times_reminded_text);
-        numReminders.setText(getString(R.string.times_reminded) + " " + things.get(position).getTimesReminded());
+        numReminders.setText(getString(R.string.times_reminded) + " " + notes.get(position).getTimesReminded());
         TextView nextDate = (TextView) findViewById(R.id.next_reminder_text);
-        nextDate.setText(getString(R.string.next_reminder) + " " + things.get(position).getNextReminder());
+        nextDate.setText(getString(R.string.next_reminder) + " " + notes.get(position).getNextReminder());
     }
 
     @Override
@@ -168,12 +168,12 @@ public class ModifyActivity extends ActionBarActivity {
     private class ModifyReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            RecallThing.ThingPositionTuple tuple = AlarmReceiver.incrementID(intent.getStringExtra("_id"), context, true);
+            RecallNote.NotePositionTuple tuple = AlarmReceiver.incrementID(intent.getStringExtra("_id"), context, true);
             abortBroadcast();
             if (tuple == null)
                 return;
             if (tuple.position == position) {
-                setTimes(tuple.things);
+                setTimes(tuple.notes);
             }
         }
     }

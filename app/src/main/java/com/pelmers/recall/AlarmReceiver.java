@@ -17,28 +17,28 @@ import java.util.List;
  */
 public class AlarmReceiver extends BroadcastReceiver {
 
-    protected static RecallThing.ThingPositionTuple incrementID(String id, Context ctx, boolean viewed) {
-        // increment the reminder for this thing id
+    protected static RecallNote.NotePositionTuple incrementID(String id, Context ctx, boolean viewed) {
+        // increment the reminder for this note id
         if (id == null)
             return null;
         Log.d("id", id);
-        ThingPersistence loader = ThingPersistence.getInstance(ctx);
-        List<RecallThing> things = loader.loadThings();
-        int position = RecallThing.findByID(things, id);
+        NotePersistence loader = NotePersistence.getInstance(ctx);
+        List<RecallNote> things = loader.loadThings();
+        int position = RecallNote.findByID(things, id);
         if (position == -1)
             return null;
-        RecallThing thing = things.get(position);
+        RecallNote thing = things.get(position);
         Log.d("recv", thing.toString());
         thing.incrementReminder(ctx);
         thing.setViewed(viewed);
         loader.saveThings(things);
-        return new RecallThing.ThingPositionTuple(things.get(position), position, things);
+        return new RecallNote.NotePositionTuple(things.get(position), position, things);
     }
 
-    protected static NotificationCompat.Builder buildNotification(Context context, List<RecallThing> things) {
+    protected static NotificationCompat.Builder buildNotification(Context context, List<RecallNote> things) {
         List<String> keywords = new ArrayList<>();
-        RecallThing theThing = null;
-        for (RecallThing thing: things) {
+        RecallNote theThing = null;
+        for (RecallNote thing: things) {
             if (!thing.isViewed()) {
                 keywords.add(thing.getKeywords());
                 theThing = thing;
@@ -80,14 +80,14 @@ public class AlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String id = intent.getStringExtra("_id");
 
-        RecallThing.ThingPositionTuple tuple = incrementID(id, context, false);
+        RecallNote.NotePositionTuple tuple = incrementID(id, context, false);
         if (tuple == null) {
             Log.d("recv", "Empty match, skipping notify");
             return;
         }
        NotificationManager mNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationCompat.Builder builder = AlarmReceiver.buildNotification(context, tuple.things);
+        NotificationCompat.Builder builder = AlarmReceiver.buildNotification(context, tuple.notes);
         // overwrite any existing alarm
         mNotificationManager.cancel(0);
         if (builder != null)

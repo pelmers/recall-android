@@ -24,9 +24,9 @@ public class MainActivity extends ActionBarActivity {
 
     protected static final int THEME_COLOR = Color.rgb(70, 183, 255);
 
-    private List<RecallThing> things;
+    private List<RecallNote> notes;
     private RecallAdapter mainAdapter;
-    private ThingPersistence loader;
+    private NotePersistence loader;
     private ListView mainListView;
     private BroadcastReceiver receiver;
 
@@ -45,16 +45,16 @@ public class MainActivity extends ActionBarActivity {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(receiver);
-        loader.saveThings(things);
+        loader.saveThings(notes);
     }
 
     private void updateAdapter() {
-        // load things from persistent storage
-        things = loader.loadThings();
-        Collections.sort(things);
-        mainAdapter = new RecallAdapter(getApplicationContext(), R.layout.thing, android.R.id.text1, things);
+        // load notes from persistent storage
+        notes = loader.loadThings();
+        Collections.sort(notes);
+        mainAdapter = new RecallAdapter(getApplicationContext(), R.layout.note, android.R.id.text1, notes);
         mainListView.setAdapter(mainAdapter);
-        loader.saveThings(things);
+        loader.saveThings(notes);
     }
 
     @Override
@@ -65,20 +65,20 @@ public class MainActivity extends ActionBarActivity {
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                launchActivity(getBaseContext(), ViewActivity.class, things.get(position).getId().toString());
+                launchActivity(getBaseContext(), ViewActivity.class, notes.get(position).getId().toString());
                 mainAdapter.notifyDataSetChanged();
             }
         });
         mainListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                launchActivity(getBaseContext(), ModifyActivity.class, things.get(position).getId().toString());
+                launchActivity(getBaseContext(), ModifyActivity.class, notes.get(position).getId().toString());
                 mainAdapter.notifyDataSetChanged();
                 return true;
             }
         });
         receiver = new MainReceiver();
-        IntentFilter filter = new IntentFilter(RecallThing.ACTION);
+        IntentFilter filter = new IntentFilter(RecallNote.ACTION);
         filter.setPriority(100);
         registerReceiver(receiver, filter);
     }
@@ -91,17 +91,17 @@ public class MainActivity extends ActionBarActivity {
         android.support.v7.app.ActionBar bar = getSupportActionBar();
         if (bar != null)
             bar.setBackgroundDrawable(new ColorDrawable(THEME_COLOR));
-        loader = ThingPersistence.getInstance(this);
+        loader = NotePersistence.getInstance(this);
         // if we somehow skipped over something, fast-forward it
         Date now = new Date();
-        things = loader.loadThings();
-        for (RecallThing t : things) {
+        notes = loader.loadThings();
+        for (RecallNote t : notes) {
             while (t.getNextReminder().compareTo(now) < 0) {
                 t.incrementReminder(this);
                 Log.d("Main", "forwarding something: " + t);
             }
         }
-        loader.saveThings(things);
+        loader.saveThings(notes);
     }
 
 

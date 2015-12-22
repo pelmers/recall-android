@@ -36,7 +36,7 @@ public class PreferenceLoader {
         try {
             return (Preferences) ObjectIO.loadObject(FILENAME, context);
         } catch (IOException | ClassNotFoundException e) {
-            return new Preferences(RecallThing.DEFAULT_FIRST_REMINDER, RecallThing.DEFAULT_REPETITION_SPACING);
+            return new Preferences(RecallNote.DEFAULT_FIRST_REMINDER, RecallNote.DEFAULT_REPETITION_SPACING);
         }
     }
 }

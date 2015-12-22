@@ -50,7 +50,7 @@ public class SettingsActivity extends ActionBarActivity {
         scalingFactorText = (EditText) findViewById(R.id.scaling_factor_field);
         scalingFactorText.addTextChangedListener(new SettingsTextWatcher());
         ListView timesListView = (ListView) findViewById(R.id.reminder_times_list);
-        timesListAdapter = new ArrayAdapter<>(this, R.layout.thing, android.R.id.text1, timesList);
+        timesListAdapter = new ArrayAdapter<>(this, R.layout.note, android.R.id.text1, timesList);
         timesListView.setAdapter(timesListAdapter);
     }
 

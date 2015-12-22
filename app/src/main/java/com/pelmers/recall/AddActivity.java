@@ -27,17 +27,17 @@ public class AddActivity extends ActionBarActivity {
             bar.setDisplayHomeAsUpEnabled(true);
         }
 
-        final ThingPersistence loader = ThingPersistence.getInstance(this);
+        final NotePersistence loader = NotePersistence.getInstance(this);
         Button saveButton = (Button) findViewById(R.id.save_button);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<RecallThing> things = loader.loadThings();
+                List<RecallNote> things = loader.loadThings();
                 String key = ((EditText) findViewById(R.id.key_text)).getText().toString();
                 String desc = ((EditText) findViewById(R.id.description_text)).getText().toString();
                 // only make it if at least one is nonempty
                 if (key.length() != 0 || desc.length() != 0) {
-                    things.add(new RecallThing(key, desc, getBaseContext()));
+                    things.add(new RecallNote(key, desc, getBaseContext()));
                     loader.saveThings(things);
                     finish();
                 } else {
@@ -61,7 +61,6 @@ public class AddActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             launchActivity(this, SettingsActivity.class);
             return true;

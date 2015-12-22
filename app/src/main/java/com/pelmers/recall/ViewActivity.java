@@ -42,26 +42,26 @@ public class ViewActivity extends ActionBarActivity {
         }
 
         Bundle extras = getIntent().getExtras();
-        ThingPersistence loader = ThingPersistence.getInstance(this);
-        List<RecallThing> things = loader.loadThings();
+        NotePersistence loader = NotePersistence.getInstance(this);
+        List<RecallNote> notes = loader.loadThings();
         if (extras != null) {
-            position = RecallThing.findByID(things, (String) extras.get("_id"));
+            position = RecallNote.findByID(notes, (String) extras.get("_id"));
             if (position == -1) {
-                Log.d("???", "Position not found in things?");
+                Log.d("???", "Position not found in notes?");
                 finish();
             }
         } else {
             Log.d("???", "Position not found in intent bundle?");
         }
 
-        final RecallThing item = things.get(position);
+        final RecallNote item = notes.get(position);
         // set the text for key and description
         TextView keyText = (TextView) findViewById(R.id.key_text);
         TextView descText = (TextView) findViewById(R.id.description_text);
         keyText.setText(item.getKeywords());
         descText.setText(item.getDescription());
         descText.setTextColor(Color.BLACK);
-        setTimes(things.get(position));
+        setTimes(notes.get(position));
         Button doneButton = (Button) findViewById(R.id.done_button);
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,7 +74,7 @@ public class ViewActivity extends ActionBarActivity {
             // reset notifications if necessary
             NotificationManager mNotificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            NotificationCompat.Builder builder = AlarmReceiver.buildNotification(this, things);
+            NotificationCompat.Builder builder = AlarmReceiver.buildNotification(this, notes);
             if (builder != null)
                 mNotificationManager.notify(0, builder.build());
             else
@@ -98,14 +98,14 @@ public class ViewActivity extends ActionBarActivity {
             feedbackText.setText("");
             feedbackRemoved = true;
         }
-        loader.saveThings(things);
+        loader.saveThings(notes);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         receiver = new ViewReceiver();
-        IntentFilter filter = new IntentFilter(RecallThing.ACTION);
+        IntentFilter filter = new IntentFilter(RecallNote.ACTION);
         filter.setPriority(100);
         registerReceiver(receiver, filter);
     }
@@ -135,12 +135,12 @@ public class ViewActivity extends ActionBarActivity {
         }
     }
 
-    private void setTimes(RecallThing thing) {
+    private void setTimes(RecallNote note) {
         // set fields related to number of times reminded and the next reminder time
         TextView numReminders = (TextView) findViewById(R.id.times_reminded_text);
-        numReminders.setText(getString(R.string.times_reminded) + " " + thing.getTimesReminded());
+        numReminders.setText(getString(R.string.times_reminded) + " " + note.getTimesReminded());
         TextView nextDate = (TextView) findViewById(R.id.next_reminder_text);
-        nextDate.setText(getString(R.string.next_reminder) + " " + RecallThing.formatDate(thing.getNextReminder()));
+        nextDate.setText(getString(R.string.next_reminder) + " " + RecallNote.formatDate(note.getNextReminder()));
     }
 
     @Override
@@ -172,12 +172,12 @@ public class ViewActivity extends ActionBarActivity {
     private class ViewReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            RecallThing.ThingPositionTuple tuple = AlarmReceiver.incrementID(intent.getStringExtra("_id"), context, true);
+            RecallNote.NotePositionTuple tuple = AlarmReceiver.incrementID(intent.getStringExtra("_id"), context, true);
             abortBroadcast();
             if (tuple == null)
                 return;
             if (tuple.position == position) {
-                setTimes(tuple.thing);
+                setTimes(tuple.note);
             }
         }
     }

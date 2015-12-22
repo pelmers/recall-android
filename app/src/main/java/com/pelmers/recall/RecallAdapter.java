@@ -15,9 +15,9 @@ import java.util.List;
 /**
  * Custom adapter based on ArrayAdapter
  */
-public class RecallAdapter extends ArrayAdapter<RecallThing> {
-    public RecallAdapter(Context activity, int layout_id, int text_id, List<RecallThing> things) {
-        super(activity, layout_id, text_id, things);
+public class RecallAdapter extends ArrayAdapter<RecallNote> {
+    public RecallAdapter(Context activity, int layout_id, int text_id, List<RecallNote> notes) {
+        super(activity, layout_id, text_id, notes);
     }
 
     @Override

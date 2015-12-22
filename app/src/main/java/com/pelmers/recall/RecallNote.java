@@ -15,9 +15,9 @@ import java.util.Locale;
 import java.util.UUID;
 
 /**
- * Encapsulate things about recall things.
+ * Class for recall notes, the user-defined items to recall.
  */
-public class RecallThing implements Serializable, Comparable<RecallThing> {
+public class RecallNote implements Serializable, Comparable<RecallNote> {
     // Time until first reminder, in seconds
     protected static long DEFAULT_FIRST_REMINDER = 10;
     // Exponential scaling factor
@@ -32,7 +32,7 @@ public class RecallThing implements Serializable, Comparable<RecallThing> {
     private int timesReminded = -1;
     private boolean viewed = true;
 
-    public RecallThing(String key, String description, Context ctx) {
+    public RecallNote(String key, String description, Context ctx) {
         this.keywords = key;
         this.description = description;
         this.nextReminder = new Date();
@@ -41,12 +41,17 @@ public class RecallThing implements Serializable, Comparable<RecallThing> {
         incrementReminder(ctx);
     }
 
-    public static int findByID(List<RecallThing> things, String id) {
-        // index of thing with given id, else -1
+    /**
+     * Find the index of note with given id in a list of notes.
+     * @param notes list of notes
+     * @param id to find
+     * @return index of note with given id, -1 if not found.
+     */
+    public static int findByID(List<RecallNote> notes, String id) {
         int position = -1;
-        for (int i = 0; i < things.size(); i++) {
-            RecallThing thing = things.get(i);
-            if (thing.getId().toString().equals(id)) {
+        for (int i = 0; i < notes.size(); i++) {
+            RecallNote note = notes.get(i);
+            if (note.getId().toString().equals(id)) {
                 position = i;
                 break;
             }
@@ -115,7 +120,7 @@ public class RecallThing implements Serializable, Comparable<RecallThing> {
     }
 
     public void cancelBroadcast(Context context) {
-        // please call this before the recall thing is replaced
+        // please call this before the recall note is replaced
         Intent alarmIntent = new Intent(ACTION);
         PendingIntent.getBroadcast(context, alarmID, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT).cancel();
     }
@@ -137,7 +142,7 @@ public class RecallThing implements Serializable, Comparable<RecallThing> {
     }
 
     @Override
-    public int compareTo(@NonNull RecallThing another) {
+    public int compareTo(@NonNull RecallNote another) {
         if (another.isViewed() && !isViewed())
             return -1;
         else if (!another.isViewed() && isViewed())
@@ -145,15 +150,15 @@ public class RecallThing implements Serializable, Comparable<RecallThing> {
         return nextReminder.compareTo(another.getNextReminder());
     }
 
-    public static class ThingPositionTuple {
-        public RecallThing thing;
+    public static class NotePositionTuple {
+        public RecallNote note;
         public int position;
-        public List<RecallThing> things;
+        public List<RecallNote> notes;
 
-        public ThingPositionTuple(RecallThing thing, int position, List<RecallThing> things) {
-            this.thing = thing;
+        public NotePositionTuple(RecallNote note, int position, List<RecallNote> notes) {
+            this.note = note;
             this.position = position;
-            this.things = things;
+            this.notes = notes;
         }
     }
 }
