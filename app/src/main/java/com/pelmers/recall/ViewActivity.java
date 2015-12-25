@@ -16,7 +16,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -139,7 +138,6 @@ public class ViewActivity extends AppCompatActivity {
             RadioGroup feedbackGroup = (RadioGroup) findViewById(R.id.feedback_group);
             TextView feedbackText = (TextView) findViewById(R.id.feedback_text);
             int selected = feedbackGroup.getCheckedRadioButtonId();
-            RadioButton rb = (RadioButton) feedbackGroup.findViewById(selected);
             PreferenceLoader preferenceLoader = PreferenceLoader.getInstance(this);
             Preferences prefs = preferenceLoader.loadPreferences();
             if (selected == R.id.feedback_early) {
@@ -150,7 +148,6 @@ public class ViewActivity extends AppCompatActivity {
             preferenceLoader.savePreferences(prefs);
             feedbackGroup.removeAllViews();
             feedbackText.setText("");
-            Toast.makeText(this, "Feedback saved: " + rb.getText(), Toast.LENGTH_SHORT).show();
             feedbackRemoved = true;
         }
     }
