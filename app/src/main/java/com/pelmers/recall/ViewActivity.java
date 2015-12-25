@@ -24,6 +24,10 @@ import java.util.List;
 
 import static com.pelmers.recall.MainActivity.handleMenuBarClick;
 import static com.pelmers.recall.MainActivity.launchActivity;
+import static com.pelmers.recall.NotesLoader.loadNotes;
+import static com.pelmers.recall.NotesLoader.saveNotes;
+import static com.pelmers.recall.PreferenceLoader.loadPreferences;
+import static com.pelmers.recall.PreferenceLoader.savePreferences;
 
 public class ViewActivity extends AppCompatActivity {
 
@@ -42,8 +46,7 @@ public class ViewActivity extends AppCompatActivity {
         }
 
         Bundle extras = getIntent().getExtras();
-        NotesLoader loader = NotesLoader.getInstance(this);
-        List<RecallNote> notes = loader.loadNotes();
+        List<RecallNote> notes = loadNotes(this);
         if (extras != null) {
             position = RecallNote.findByID(notes, (String) extras.get("_id"));
             if (position == -1) {
@@ -81,7 +84,7 @@ public class ViewActivity extends AppCompatActivity {
             else
                 mNotificationManager.cancel(0);
             // show an alert dialog to ask them for input, unless they've set the pref to false
-            if (PreferenceLoader.getInstance(this).loadPreferences().confirmKeywords()) {
+            if (loadPreferences(this).confirmKeywords()) {
                 TextInputAlertDialog.showInputAlertDialog(this, "Retype your keywords", "OK",
                         new TextInputAlertDialog.TextInputClickListener() {
                             @Override
@@ -102,7 +105,7 @@ public class ViewActivity extends AppCompatActivity {
             feedbackText.setText("");
             feedbackRemoved = true;
         }
-        loader.saveNotes(notes);
+        saveNotes(this, notes);
     }
 
     @Override
@@ -114,7 +117,7 @@ public class ViewActivity extends AppCompatActivity {
         registerReceiver(receiver, filter);
         RecallNote item;
         try {
-            item = NotesLoader.getInstance(this).loadNotes().get(position);
+            item = loadNotes(this).get(position);
         } catch (IndexOutOfBoundsException ex) {
             // potentially we deleted the item, and then hit back from modify activity.
             finish();
@@ -138,14 +141,13 @@ public class ViewActivity extends AppCompatActivity {
             RadioGroup feedbackGroup = (RadioGroup) findViewById(R.id.feedback_group);
             TextView feedbackText = (TextView) findViewById(R.id.feedback_text);
             int selected = feedbackGroup.getCheckedRadioButtonId();
-            PreferenceLoader preferenceLoader = PreferenceLoader.getInstance(this);
-            Preferences prefs = preferenceLoader.loadPreferences();
+            Preferences prefs = loadPreferences(this);
             if (selected == R.id.feedback_early) {
                 prefs.setFirstReminder((long) (prefs.getFirstReminder() * 1.1));
             } else if (selected == R.id.feedback_late) {
                 prefs.setFirstReminder((long) (prefs.getFirstReminder() / 1.1));
             }
-            preferenceLoader.savePreferences(prefs);
+            savePreferences(this, prefs);
             feedbackGroup.removeAllViews();
             feedbackText.setText("");
             feedbackRemoved = true;

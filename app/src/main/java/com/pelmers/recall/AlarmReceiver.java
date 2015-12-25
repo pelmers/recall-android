@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static com.pelmers.recall.NotesLoader.loadNotes;
+import static com.pelmers.recall.NotesLoader.saveNotes;
+
 /**
  * Receive our alarm broadcasts.
  */
@@ -26,8 +29,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         if (id == null)
             return null;
         Log.d("id", id);
-        NotesLoader loader = NotesLoader.getInstance(ctx);
-        List<RecallNote> notes = loader.loadNotes();
+        List<RecallNote> notes = loadNotes(ctx);
         int position = RecallNote.findByID(notes, id);
         if (position == -1)
             return null;
@@ -35,7 +37,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         Log.d("recv", note.toString());
         note.incrementReminder(ctx);
         note.setViewed(viewed);
-        loader.saveNotes(notes);
+        saveNotes(ctx, notes);
         return new Triple<>(notes.get(position), position, notes);
     }
 

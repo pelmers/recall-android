@@ -20,6 +20,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import static com.pelmers.recall.NotesLoader.loadNotes;
+import static com.pelmers.recall.NotesLoader.saveNotes;
+
 
 /**
  * The main activity for the app, the first one the user sees.
@@ -30,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
 
     private List<RecallNote> notes;
     private RecallAdapter mainAdapter;
-    private NotesLoader loader;
     private ListView mainListView;
     private BroadcastReceiver receiver;
 
@@ -55,18 +57,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(receiver);
-        loader.saveNotes(notes);
+        saveNotes(this, notes);
     }
 
     /**
      * Reload notes from persistent storage and update the list view adapter.
      */
     private void updateAdapter() {
-        notes = loader.loadNotes();
+        notes = loadNotes(this);
         Collections.sort(notes);
         mainAdapter = new RecallAdapter(getApplicationContext(), R.layout.note, android.R.id.text1, notes);
         mainListView.setAdapter(mainAdapter);
-        loader.saveNotes(notes);
+        saveNotes(this, notes);
     }
 
     /**
@@ -106,17 +108,16 @@ public class MainActivity extends AppCompatActivity {
         android.support.v7.app.ActionBar bar = getSupportActionBar();
         if (bar != null)
             bar.setBackgroundDrawable(new ColorDrawable(THEME_COLOR));
-        loader = NotesLoader.getInstance(this);
         // if we somehow skipped over something, fast-forward it
         Date now = new Date();
-        notes = loader.loadNotes();
+        notes = loadNotes(this);
         for (RecallNote t : notes) {
             while (t.getNextReminder().compareTo(now) < 0) {
                 t.incrementReminder(this);
                 Log.d("Main", "forwarding something: " + t);
             }
         }
-        loader.saveNotes(notes);
+        saveNotes(this, notes);
     }
 
 

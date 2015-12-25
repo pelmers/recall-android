@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+import static com.pelmers.recall.PreferenceLoader.loadPreferences;
+
 /**
  * Class for recall notes, the user-defined items to recall.
  */
@@ -128,7 +130,7 @@ public class RecallNote implements Serializable, Comparable<RecallNote> {
     public void incrementReminder(Context context) {
         // increment the reminder and set an alarm for the next one.
         timesReminded++;
-        Preferences prefs = PreferenceLoader.getInstance(context).loadPreferences();
+        Preferences prefs = loadPreferences(context);
         // Multiply by 1000 to go to milliseconds
         long nextInterval = (long) Math.pow(prefs.getExponentBase(), timesReminded) * prefs.getFirstReminder() * 1000;
         nextReminder.setTime(nextReminder.getTime() + nextInterval);

@@ -19,13 +19,14 @@ import android.widget.Toast;
 import java.util.List;
 
 import static com.pelmers.recall.MainActivity.handleMenuBarClick;
+import static com.pelmers.recall.NotesLoader.loadNotes;
+import static com.pelmers.recall.NotesLoader.saveNotes;
 
 
 public class ModifyActivity extends AppCompatActivity {
 
     /** Position of the note being modified in the list of notes. */
     private int position;
-    private NotesLoader loader;
     private List<RecallNote> notes;
     private ModifyReceiver receiver;
 
@@ -39,8 +40,7 @@ public class ModifyActivity extends AppCompatActivity {
             bar.setDisplayHomeAsUpEnabled(true);
         }
 
-        loader = NotesLoader.getInstance(this);
-        notes = loader.loadNotes();
+        notes = loadNotes(this);
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             position = RecallNote.findByID(notes, (String) extras.get("_id"));
@@ -53,10 +53,10 @@ public class ModifyActivity extends AppCompatActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<RecallNote> notes = loader.loadNotes();
+                List<RecallNote> notes = loadNotes(ModifyActivity.this);
                 notes.get(position).cancelBroadcast(getBaseContext());
                 notes.remove(position);
-                loader.saveNotes(notes);
+                saveNotes(ModifyActivity.this, notes);
                 finish();
             }
         });
@@ -65,12 +65,12 @@ public class ModifyActivity extends AppCompatActivity {
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<RecallNote> notes = loader.loadNotes();
+                List<RecallNote> notes = loadNotes(ModifyActivity.this);
                 RecallNote oldThing = notes.get(position);
                 oldThing.cancelBroadcast(getBaseContext());
                 notes.set(position, new RecallNote(oldThing.getKeywords(), oldThing.getDescription(), getBaseContext()));
                 setTimes(notes.get(position));
-                loader.saveNotes(notes);
+                saveNotes(ModifyActivity.this, notes);
             }
         });
 
@@ -78,13 +78,13 @@ public class ModifyActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<RecallNote> notes = loader.loadNotes();
+                List<RecallNote> notes = loadNotes(ModifyActivity.this);
                 String key = ((EditText) findViewById(R.id.key_text)).getText().toString();
                 String desc = ((EditText) findViewById(R.id.description_text)).getText().toString();
                 if (key.length() != 0 || desc.length() != 0) {
                     notes.get(position).setKeywords(key);
                     notes.get(position).setDescription(desc);
-                    loader.saveNotes(notes);
+                    saveNotes(ModifyActivity.this, notes);
                     finish();
                 } else {
                     Toast.makeText(getBaseContext(), "Key or description not set", Toast.LENGTH_SHORT).show();
@@ -111,8 +111,7 @@ public class ModifyActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         // Makes sure loader always has valid reference to a context
-        loader = NotesLoader.getInstance(this);
-        notes = loader.loadNotes();
+        notes = loadNotes(this);
         initFields();
         receiver = new ModifyReceiver();
         IntentFilter filter = new IntentFilter(RecallNote.ACTION);

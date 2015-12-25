@@ -9,31 +9,15 @@ import java.io.IOException;
  * Load preferences from preferences file.
  */
 public class PreferenceLoader {
-    /** Singleton instance. */
-    private static PreferenceLoader instance;
     /** Filename for preferences saving. */
     private final static String FILENAME = "PREFS";
-    /** App context. */
-    private Context context;
 
-    // Private constructor enforces singleton.
-    private PreferenceLoader() {
-    }
-
-    /**
-     * Return an instance of PreferenceLoader for given context.
-     */
-    public static PreferenceLoader getInstance(Context context) {
-        if (instance == null)
-            instance = new PreferenceLoader();
-        instance.context = context;
-        return instance;
-    }
+    private PreferenceLoader() {}
 
     /**
      * Save preferences to a file.
      */
-    protected void savePreferences(Preferences prefs) {
+    protected static void savePreferences(Context context, Preferences prefs) {
         try {
             ObjectIO.saveObject(prefs, FILENAME, context);
             Toast.makeText(context, "Preferences saved.", Toast.LENGTH_SHORT).show();
@@ -46,7 +30,7 @@ public class PreferenceLoader {
     /**
      * Reload preferences from the file. If unable to, return defaults.
      */
-    protected Preferences loadPreferences() {
+    protected static Preferences loadPreferences(Context context) {
         try {
             return (Preferences) ObjectIO.loadObject(FILENAME, context);
         } catch (IOException | ClassNotFoundException e) {

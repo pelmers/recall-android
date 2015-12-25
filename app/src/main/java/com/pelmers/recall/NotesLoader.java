@@ -12,28 +12,11 @@ import java.util.List;
  */
 public class NotesLoader {
     private static final String FILENAME = "THINGS";
-    private static NotesLoader instance = null;
-    private Context context = null;
-
-    /**
-     * @param ctx current app context
-     * @return a note loader for this app context.
-     */
-    public static NotesLoader getInstance(Context ctx) {
-        if (instance == null)
-            instance = new NotesLoader();
-        instance.context = ctx;
-        return instance;
-    }
-
-    // Private constructor to enforce singleton.
-    private NotesLoader() {
-    }
 
     /**
      * Save a list of notes.
      */
-    protected void saveNotes(List<RecallNote> notes) {
+    protected static void saveNotes(Context context, List<RecallNote> notes) {
         // save notes to persistent storage
         try {
             ObjectIO.saveObject(notes, FILENAME, context);
@@ -46,7 +29,7 @@ public class NotesLoader {
     /**
      * Load a previously saved list of notes.
      */
-    protected List<RecallNote> loadNotes() {
+    protected static List<RecallNote> loadNotes(Context context) {
         List<RecallNote> notes;
         try {
             //noinspection unchecked

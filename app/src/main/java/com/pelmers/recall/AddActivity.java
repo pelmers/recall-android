@@ -13,6 +13,8 @@ import android.widget.Toast;
 import java.util.List;
 
 import static com.pelmers.recall.MainActivity.handleMenuBarClick;
+import static com.pelmers.recall.NotesLoader.loadNotes;
+import static com.pelmers.recall.NotesLoader.saveNotes;
 
 /**
  * The activity for the screen to add a new note.
@@ -32,18 +34,17 @@ public class AddActivity extends AppCompatActivity {
             bar.setDisplayHomeAsUpEnabled(true);
         }
 
-        final NotesLoader loader = NotesLoader.getInstance(this);
         Button saveButton = (Button) findViewById(R.id.save_button);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<RecallNote> notes = loader.loadNotes();
+                List<RecallNote> notes = loadNotes(AddActivity.this);
                 String key = ((EditText) findViewById(R.id.key_text)).getText().toString();
                 String desc = ((EditText) findViewById(R.id.description_text)).getText().toString();
                 // only make it if at least one is nonempty
                 if (key.length() != 0 || desc.length() != 0) {
                     notes.add(new RecallNote(key, desc, getBaseContext()));
-                    loader.saveNotes(notes);
+                    saveNotes(AddActivity.this, notes);
                     finish();
                 } else {
                     Toast.makeText(getBaseContext(), "Key or description not set", Toast.LENGTH_SHORT).show();

@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.pelmers.recall.MainActivity.handleMenuBarClick;
+import static com.pelmers.recall.PreferenceLoader.loadPreferences;
+import static com.pelmers.recall.PreferenceLoader.savePreferences;
 
 
 /**
@@ -100,8 +102,7 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // restore the settings from disk
-        PreferenceLoader preferenceLoader = PreferenceLoader.getInstance(this);
-        Preferences preferences = preferenceLoader.loadPreferences();
+        Preferences preferences = loadPreferences(this);
         firstReminderText.setText(Long.toString(preferences.getFirstReminder()));
         scalingFactorText.setText(Double.toString(preferences.getExponentBase()));
         checkBoxConfirmKeywords.setChecked(preferences.confirmKeywords());
@@ -112,8 +113,7 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         // save the settings to disk
-        PreferenceLoader preferenceLoader = PreferenceLoader.getInstance(this);
-        Preferences preferences = preferenceLoader.loadPreferences();
+        Preferences preferences = loadPreferences(this);
         try {
             preferences.setFirstReminder(Long.parseLong(firstReminderText.getText().toString()));
             preferences.setExponentBase(Double.parseDouble(scalingFactorText.getText().toString()));
@@ -121,7 +121,7 @@ public class SettingsActivity extends AppCompatActivity {
             // min the first reminder at 60 seconds, and the exponent at 1
             preferences.setFirstReminder(Math.max(60, preferences.getFirstReminder()));
             preferences.setExponentBase(Math.max(1, preferences.getExponentBase()));
-            preferenceLoader.savePreferences(preferences);
+            savePreferences(this, preferences);
         } catch (NumberFormatException ex) {
             Log.d(TAG, "Format exception on update" + ex.toString());
             Toast.makeText(this, "Check number format.", Toast.LENGTH_SHORT).show();
