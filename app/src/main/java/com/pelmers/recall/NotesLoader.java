@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Singleton handle loading and saving notes to some file.
  */
-public class NotesLoader {
+public final class NotesLoader {
     private static final String FILENAME = "THINGS";
 
     private NotesLoader() {}

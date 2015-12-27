@@ -23,7 +23,7 @@ import static com.pelmers.recall.NotesLoader.loadNotes;
 import static com.pelmers.recall.NotesLoader.saveNotes;
 
 
-public class ModifyActivity extends AppCompatActivity {
+public final class ModifyActivity extends AppCompatActivity {
 
     /** Position of the note being modified in the list of notes. */
     private int position;

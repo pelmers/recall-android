@@ -19,7 +19,7 @@ import static com.pelmers.recall.NotesLoader.saveNotes;
 /**
  * The activity for the screen to add a new note.
  */
-public class AddActivity extends AppCompatActivity {
+public final class AddActivity extends AppCompatActivity {
 
     /**
      * Instantiate the view and set a listener for the save button.

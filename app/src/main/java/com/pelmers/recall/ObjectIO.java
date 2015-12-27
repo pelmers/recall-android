@@ -11,7 +11,9 @@ import java.io.ObjectOutputStream;
 /**
  * Handle methods for saving and loading serializable objects.
  */
-public class ObjectIO {
+public final class ObjectIO {
+    private ObjectIO() {}
+
     /**
      * Save given object to the filename in this context, using Java's default serialization.
      * @throws IOException

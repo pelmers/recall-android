@@ -19,7 +19,7 @@ import static com.pelmers.recall.PreferenceLoader.loadPreferences;
 /**
  * Class for recall notes, the user-defined items to recall.
  */
-public class RecallNote implements Serializable, Comparable<RecallNote> {
+public final class RecallNote implements Serializable, Comparable<RecallNote> {
     protected static final String ACTION = "com.pelmers.recall.BROADCAST";
     /**
      * User-defined keywords field for this note.

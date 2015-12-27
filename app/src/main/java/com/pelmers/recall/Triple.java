@@ -3,7 +3,7 @@ package com.pelmers.recall;
 /**
  * Simple triple class.
  */
-public class Triple<A, B, C> {
+public final class Triple<A, B, C> {
     public final A first;
     public final B second;
     public final C third;

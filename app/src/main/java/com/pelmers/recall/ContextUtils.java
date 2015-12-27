@@ -8,7 +8,9 @@ import android.net.Uri;
 /**
  * Some methods which multiple activities share.
  */
-public class ContextUtils {
+public final class ContextUtils {
+    private ContextUtils() {}
+
     /**
      * Launch an activity with "" _id field.
      */

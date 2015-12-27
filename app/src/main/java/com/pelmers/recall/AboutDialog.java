@@ -10,7 +10,7 @@ import android.widget.TextView;
 /**
  * About dialog that gives a bit of background on the app and has a donation button.
  */
-public class AboutDialog {
+public final class AboutDialog {
     public static void show(final Context context) {
         final TextView textView = new TextView(context);
         textView.setText(R.string.about_text);

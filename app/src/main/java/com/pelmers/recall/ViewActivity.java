@@ -29,7 +29,7 @@ import static com.pelmers.recall.NotesLoader.saveNotes;
 import static com.pelmers.recall.PreferenceLoader.loadPreferences;
 import static com.pelmers.recall.PreferenceLoader.savePreferences;
 
-public class ViewActivity extends AppCompatActivity {
+public final class ViewActivity extends AppCompatActivity {
 
     private int position;
     private BroadcastReceiver receiver;

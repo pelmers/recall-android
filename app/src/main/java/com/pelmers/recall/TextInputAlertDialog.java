@@ -8,7 +8,9 @@ import android.widget.EditText;
 /**
  * Method that shows an alert dialog which can take text input and has two buttons.
  */
-public class TextInputAlertDialog {
+public final class TextInputAlertDialog {
+    private TextInputAlertDialog() {}
+
     /**
      * Show an alert dialog that takes some text input.
      * @param activity the current activity

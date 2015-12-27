@@ -48,22 +48,17 @@ public class AlarmReceiver extends BroadcastReceiver {
     private static Triple<String, String, List<RecallNote>> getNotificationInfo(List<RecallNote> notes) {
         List<String> keywords = new ArrayList<>();
         List<RecallNote> unread = new ArrayList<>();
-        RecallNote theNote = null;
-        for (RecallNote note: notes) {
+        for (RecallNote note : notes) {
             if (!note.isViewed()) {
                 keywords.add(note.getKeywords());
                 unread.add(note);
-                theNote = note;
             }
         }
-        if (theNote == null)
+        if (keywords.size() == 0)
             return null;
-        String title = theNote.getKeywords();
-        String text = joinStrings(keywords, ", ");
-        if (keywords.size() > 1) {
-            title = String.format("%d unviewed reminders.", keywords.size());
-        }
-        return new Triple<>(title, text, unread);
+        String title = (keywords.size() == 1) ? keywords.get(0) :
+                String.format("%d unviewed reminders.", keywords.size());
+        return new Triple<>(title, joinStrings(keywords, ", "), unread);
     }
 
     /**
@@ -73,7 +68,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         Triple<String, String, List<RecallNote>> notificationInfo = getNotificationInfo(notes);
         if (notificationInfo == null)
             return null;
-        List<RecallNote> unread = notificationInfo.third;
+        final List<RecallNote> unread = notificationInfo.third;
         // Create a notification with the info we found.
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
@@ -82,13 +77,12 @@ public class AlarmReceiver extends BroadcastReceiver {
                         .setContentText(notificationInfo.second)
                         .setAutoCancel(true);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        Intent parent = new Intent(context, MainActivity.class);
-        stackBuilder.addNextIntent(parent);
+        stackBuilder.addNextIntent(new Intent(context, MainActivity.class));
         // If there's only one unread activity, clicking the notification can go straight to it.
         if (unread.size() == 1) {
-            Intent result = new Intent(context, ViewActivity.class);
-            result.putExtra("_id", unread.get(0).getId().toString());
-            stackBuilder.addNextIntent(result);
+            stackBuilder.addNextIntent(new Intent(context, ViewActivity.class) {{
+                putExtra("_id", unread.get(0).getId().toString());
+            }});
         }
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(
                 unread.get(0).getAlarmID(),
@@ -109,7 +103,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             Log.d("recv", "Empty match, skipping notify");
             return;
         }
-       NotificationManager mNotificationManager =
+        NotificationManager mNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder builder = AlarmReceiver.buildNotification(context, triple.third);
         // Overwrite any existing alarm

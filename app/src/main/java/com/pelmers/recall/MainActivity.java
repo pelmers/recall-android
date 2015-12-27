@@ -28,7 +28,7 @@ import static com.pelmers.recall.NotesLoader.saveNotes;
 /**
  * The main activity for the app, the first one the user sees.
  */
-public class MainActivity extends AppCompatActivity {
+public final class MainActivity extends AppCompatActivity {
 
     protected static final int THEME_COLOR = Color.rgb(70, 183, 255);
 

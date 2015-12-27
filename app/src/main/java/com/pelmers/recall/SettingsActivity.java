@@ -27,7 +27,7 @@ import static com.pelmers.recall.PreferenceLoader.savePreferences;
 /**
  * Activity for changing app settings.
  */
-public class SettingsActivity extends AppCompatActivity {
+public final class SettingsActivity extends AppCompatActivity {
 
     private static final String TAG = "SettingsActivity";
     private EditText firstReminderText;

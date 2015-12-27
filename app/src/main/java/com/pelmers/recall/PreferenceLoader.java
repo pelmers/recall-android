@@ -8,9 +8,9 @@ import java.io.IOException;
 /**
  * Load preferences from preferences file.
  */
-public class PreferenceLoader {
+public final class PreferenceLoader {
     /** Filename for preferences saving. */
-    private final static String FILENAME = "PREFS";
+    private static final String FILENAME = "PREFS";
 
     private PreferenceLoader() {}
 
