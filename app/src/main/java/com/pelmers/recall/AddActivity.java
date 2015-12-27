@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import static com.pelmers.recall.MainActivity.handleMenuBarClick;
+import static com.pelmers.recall.ContextUtils.handleMenuBarClick;
 import static com.pelmers.recall.NotesLoader.loadNotes;
 import static com.pelmers.recall.NotesLoader.saveNotes;
 

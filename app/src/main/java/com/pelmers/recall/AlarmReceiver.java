@@ -42,7 +42,8 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 
     /**
-     * Return a triple of notification title, notification text, and list of all unviewed notes.
+     * Return a triple of notification title, notification text, and list of all un-viewed notes,
+     * null if no note is un-viewed.
      */
     private static Triple<String, String, List<RecallNote>> getNotificationInfo(List<RecallNote> notes) {
         List<String> keywords = new ArrayList<>();
@@ -58,10 +59,9 @@ public class AlarmReceiver extends BroadcastReceiver {
         if (theNote == null)
             return null;
         String title = theNote.getKeywords();
-        String text = theNote.getDescription();
+        String text = joinStrings(keywords, ", ");
         if (keywords.size() > 1) {
             title = String.format("%d unviewed reminders.", keywords.size());
-            text = joinStrings(keywords, ", ");
         }
         return new Triple<>(title, text, unread);
     }

@@ -27,7 +27,8 @@
         android:hint="@string/description_button"
         android:inputType="textCapSentences|text|textMultiLine"
         android:textIsSelectable="false"
-        android:lines="2" />
+        android:lines="3"
+        android:gravity="top" />
 
     <TextView
         android:layout_width="wrap_content"

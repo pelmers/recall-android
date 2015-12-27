@@ -13,6 +13,8 @@ import java.util.List;
 public class NotesLoader {
     private static final String FILENAME = "THINGS";
 
+    private NotesLoader() {}
+
     /**
      * Save a list of notes.
      */

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -20,6 +19,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import static com.pelmers.recall.ContextUtils.handleMenuBarClick;
+import static com.pelmers.recall.ContextUtils.launchActivity;
 import static com.pelmers.recall.NotesLoader.loadNotes;
 import static com.pelmers.recall.NotesLoader.saveNotes;
 
@@ -35,23 +36,6 @@ public class MainActivity extends AppCompatActivity {
     private RecallAdapter mainAdapter;
     private ListView mainListView;
     private BroadcastReceiver receiver;
-
-    /**
-     * Launch an activity with "" _id field.
-     */
-    public static void launchActivity(Context ctx, Class<?> activity) {
-        launchActivity(ctx, activity, "");
-    }
-
-    /**
-     * Launch an activity with given _id field.
-     */
-    public static void launchActivity(Context ctx, Class<?> activity, String _id) {
-        Intent intent = new Intent(ctx, activity);
-        intent.putExtra("_id", _id);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        ctx.startActivity(intent);
-    }
 
     @Override
     protected void onPause() {
@@ -130,33 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        return handleMenuBarClick(this, id) || super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * Handle context-invariant types of clicks to the action bar.
-     * @return true if we handled the click, false otherwise.
-     */
-    protected static boolean handleMenuBarClick(Context context, int id) {
-        if (id == R.id.action_settings) {
-            // start the settings activity
-            launchActivity(context, SettingsActivity.class);
-            return true;
-        } else if (id == R.id.action_add) {
-            // start an add activity
-            launchActivity(context, AddActivity.class);
-            return true;
-        } else if (id == R.id.action_about) {
-            // show the about dialog
-            AboutDialog.show(context);
-            return true;
-        } else if (id == R.id.action_view_source) {
-            // point browser to github page
-            context.startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("https://github.com/pelmers/recall-android")));
-        }
-        return false;
+        return handleMenuBarClick(this, item.getItemId()) || super.onOptionsItemSelected(item);
     }
 
     /**

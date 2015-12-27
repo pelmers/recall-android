@@ -22,8 +22,8 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import static com.pelmers.recall.MainActivity.handleMenuBarClick;
-import static com.pelmers.recall.MainActivity.launchActivity;
+import static com.pelmers.recall.ContextUtils.handleMenuBarClick;
+import static com.pelmers.recall.ContextUtils.launchActivity;
 import static com.pelmers.recall.NotesLoader.loadNotes;
 import static com.pelmers.recall.NotesLoader.saveNotes;
 import static com.pelmers.recall.PreferenceLoader.loadPreferences;

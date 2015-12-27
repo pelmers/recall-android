@@ -19,7 +19,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.pelmers.recall.MainActivity.handleMenuBarClick;
+import static com.pelmers.recall.ContextUtils.handleMenuBarClick;
 import static com.pelmers.recall.PreferenceLoader.loadPreferences;
 import static com.pelmers.recall.PreferenceLoader.savePreferences;
 
@@ -103,8 +103,8 @@ public class SettingsActivity extends AppCompatActivity {
         super.onResume();
         // restore the settings from disk
         Preferences preferences = loadPreferences(this);
-        firstReminderText.setText(Long.toString(preferences.getFirstReminder()));
-        scalingFactorText.setText(Double.toString(preferences.getExponentBase()));
+        firstReminderText.setText(String.format("%d", preferences.getFirstReminder()));
+        scalingFactorText.setText(String.format("%.2f", preferences.getExponentBase()));
         checkBoxConfirmKeywords.setChecked(preferences.confirmKeywords());
         updateTimesList();
     }
