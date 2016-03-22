@@ -32,6 +32,7 @@ public final class SettingsActivity extends AppCompatActivity {
     private static final String TAG = "SettingsActivity";
     private EditText firstReminderText;
     private EditText scalingFactorText;
+    private EditText intervalCeilingText;
     private CheckBox checkBoxConfirmKeywords;
     private List<String> timesList;
     private ArrayAdapter<String> timesListAdapter;
@@ -58,6 +59,8 @@ public final class SettingsActivity extends AppCompatActivity {
         firstReminderText.addTextChangedListener(new SettingsTextWatcher());
         scalingFactorText = (EditText) findViewById(R.id.scaling_factor_field);
         scalingFactorText.addTextChangedListener(new SettingsTextWatcher());
+        intervalCeilingText = (EditText) findViewById(R.id.interval_ceiling_field);
+        intervalCeilingText.addTextChangedListener(new SettingsTextWatcher());
         checkBoxConfirmKeywords = (CheckBox) findViewById(R.id.checkbox_confirm_keywords);
         ListView timesListView = (ListView) findViewById(R.id.reminder_times_list);
         timesListAdapter = new ArrayAdapter<>(this, R.layout.note, android.R.id.text1, timesList);
@@ -69,9 +72,10 @@ public final class SettingsActivity extends AppCompatActivity {
         timesList.clear();
         try {
             long first = Long.parseLong(firstReminderText.getText().toString());
+            long ceil = Long.parseLong(intervalCeilingText.getText().toString());
             double scale = Double.parseDouble(scalingFactorText.getText().toString());
             for (int i = 0; i < 10; i++) {
-                timesList.add(prettySeconds((long) (first * Math.pow(scale, i))));
+                timesList.add(prettySeconds(Math.min(ceil, (long) (first * Math.pow(scale, i)))));
             }
         } catch (NumberFormatException exc) {
             Log.d(TAG, "Format exception on update" + exc.toString());
@@ -104,6 +108,7 @@ public final class SettingsActivity extends AppCompatActivity {
         // restore the settings from disk
         Preferences preferences = loadPreferences(this);
         firstReminderText.setText(String.format("%d", preferences.getFirstReminder()));
+        intervalCeilingText.setText(String.format("%d", preferences.getIntervalCeiling()));
         scalingFactorText.setText(String.format("%.2f", preferences.getExponentBase()));
         checkBoxConfirmKeywords.setChecked(preferences.confirmKeywords());
         updateTimesList();
@@ -116,6 +121,7 @@ public final class SettingsActivity extends AppCompatActivity {
         Preferences preferences = loadPreferences(this);
         try {
             preferences.setFirstReminder(Long.parseLong(firstReminderText.getText().toString()));
+            preferences.setIntervalCeiling(Long.parseLong(intervalCeilingText.getText().toString()));
             preferences.setExponentBase(Double.parseDouble(scalingFactorText.getText().toString()));
             preferences.setConfirmKeywords(checkBoxConfirmKeywords.isChecked());
             // min the first reminder at 60 seconds, and the exponent at 1

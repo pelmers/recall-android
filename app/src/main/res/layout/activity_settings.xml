@@ -79,9 +79,29 @@
         android:layout_height="wrap_content"
         android:text="Confirm keywords on reminder"
         android:id="@+id/checkbox_confirm_keywords"
+        android:checked="true"
+        android:layout_below="@+id/interval_ceiling_field"
+        android:layout_alignRight="@+id/reminder_times_list"
+        android:layout_alignEnd="@+id/reminder_times_list" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:id="@+id/interval_ceiling_field"
         android:layout_below="@+id/scaling_factor_field"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:checked="true" />
+        android:layout_alignRight="@+id/checkbox_confirm_keywords"
+        android:layout_alignEnd="@+id/checkbox_confirm_keywords" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/text_interval_ceiling"
+        android:id="@+id/txtInterval"
+        android:layout_above="@+id/checkbox_confirm_keywords"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

@@ -131,8 +131,10 @@ public final class RecallNote implements Serializable, Comparable<RecallNote> {
         // increment the reminder and set an alarm for the next one.
         timesReminded++;
         Preferences prefs = loadPreferences(context);
-        // Multiply by 1000 to go to milliseconds
-        long nextInterval = (long) Math.pow(prefs.getExponentBase(), timesReminded) * prefs.getFirstReminder() * 1000;
+        // Calculate by formula, then multiply by 1000 to go to milliseconds
+        long nextInterval = Math.min(prefs.getIntervalCeiling(),
+                                     (long) Math.pow(prefs.getExponentBase(), timesReminded)
+                                            * prefs.getFirstReminder()) * 1000;
         nextReminder.setTime(nextReminder.getTime() + nextInterval);
         // Set our alarm with the alarm manager service.
         Intent alarmIntent = new Intent(ACTION);

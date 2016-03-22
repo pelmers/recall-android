@@ -28,5 +28,6 @@
     <string name="action_about">About</string>
     <string name="action_viewsource">Source code</string>
     <string name="about_text">Recall implements spaced repetition, a memory technique that reinforces previously learned material by reminding at increasingly intervals of time. It\'s useful for vocabulary, phone numbers, study notes, or other miscellaneous facts.\n\nSponsor a coffee to support development?</string>
+    <string name="text_interval_ceiling">Interval Ceiling</string>
 
 </resources>
